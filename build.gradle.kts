@@ -11,6 +11,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             implementation(libs.kermit)
+            implementation(libs.betterParse)
+        }
+
+        commonTest.dependencies {
+            implementation(libs.koltin.test)
         }
     }
 }
