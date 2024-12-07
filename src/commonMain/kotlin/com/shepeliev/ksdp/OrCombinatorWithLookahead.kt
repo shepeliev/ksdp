@@ -6,9 +6,7 @@ import com.github.h0tk3y.betterParse.parser.*
 
 /** Tries to parse the sequence with the [parsers] until one succeeds. Returns its [Parsed] result in this case.
  * If none succeeds, returns the [AlternativesFailure] with all the [ErrorResult]s. */
-public class OrCombinatorWithLookahead<T>(public val parsers: List<Parser<T>>) : Parser<T> {
-    private val orCombinator = OrCombinator(parsers)
-
+class OrCombinatorWithLookahead<T>(val parsers: List<Parser<T>>) : Parser<T> {
     override fun tryParse(tokens: TokenMatchesSequence, fromPosition: Int): ParseResult<T> {
         var failures: ArrayList<ErrorResult>? = null
         for (parser in parsers) {
@@ -30,7 +28,7 @@ public class OrCombinatorWithLookahead<T>(public val parsers: List<Parser<T>>) :
     }
 }
 
-public infix fun <A> Parser<A>.orNext(other: Parser<A>): Parser<A> {
+infix fun <A> Parser<A>.orNext(other: Parser<A>): Parser<A> {
     val leftParsers = if (this is OrCombinatorWithLookahead) parsers else listOf(this)
     val rightParsers = if (other is OrCombinatorWithLookahead) other.parsers else listOf(other)
     return OrCombinatorWithLookahead(leftParsers + rightParsers)
