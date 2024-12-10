@@ -115,6 +115,31 @@ internal val byteString: Parser<String> = oneOrMore(_x01 or _x02 or _x03 or _x04
 //                      ; session-level attribute to be used
 internal val text = byteString
 
+// decimal-uchar =      DIGIT
+//                      / POS-DIGIT DIGIT
+//                      / ("1" 2*(DIGIT))
+//                      / ("2" ("0"/"1"/"2"/"3"/"4") DIGIT)
+//                      / ("2" "5" ("0"/"1"/"2"/"3"/"4"/"5"))
+internal val decimalUchar: Parser<String> =
+    (two and five and (zero or one or two or three or four or five) map { (a, b, c) -> a + b + c }) or
+        ((two and (zero or one or two or three or four) and DIGIT) map { (a, b, c) -> a + b + c }) or
+        ((one and (2 times DIGIT)) map { (a, b) -> a + b.text }) or
+        ((POS_DIGIT and DIGIT) map { (a, b) -> a + b }) or
+        DIGIT
+
+// hex4    =            1*4HEXDIG
+internal val hex4: Parser<String> = 1..4 timesAsText HEXDIG
+
+// hexseq  =             hex4 *( ":" hex4)
+internal val hexseq = hex4 and zeroOrMoreAsText(colon and hex4 map { it.text2 }) map { it.text2 }
+
+// hexpart =             hexseq / hexseq "::" [ hexseq ] /
+//                       "::" [ hexseq ]
+internal val hexpart =
+    (hexseq and doubleColon and (0..1 timesAsText  hexseq) map { it.text3 }) or
+        (doubleColon and (0..1 timesAsText  hexseq) map { it.text2 }) or
+        hexseq
+
 internal val Tuple2<String, String>.text2 get() = t1 + t2
 internal val Tuple3<String, String, String>.text3 get() = t1 + t2 + t3
 internal val Tuple4<String, String, String, String>.text4 get() = t1 + t2 + t3 + t4

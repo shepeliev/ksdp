@@ -29,6 +29,7 @@ internal fun String.sdpField(lineNumber: Int = 1): Field {
         Field.Type.ORIGIN.type -> Origin(this, lineNumber)
         Field.Type.SESSION_NAME.type -> SessionName(this, lineNumber)
         Field.Type.INFO.type -> Info(this, lineNumber)
+        Field.Type.URI.type -> Uri(this, lineNumber)
         else -> throw SdpParseException("Parse SDP at line #$lineNumber failed: unknown field type \"$lineType=\".")
     }
 }
