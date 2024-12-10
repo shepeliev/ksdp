@@ -291,8 +291,6 @@ data class Sdp(
         private val OCTET by x00 or x01 or x02 or x03 or x04 or x05 or x06 or x07 or x08 or x09 or x0A or x0B or x0C or x0D or x0E or x0F or x10 or x11 or x12 or x13 or x14 or x15 or x16 or x17 or x18 or x19 or x1A or x1B or x1C or x1D or x1E or x1F or x20 or x21 or x22 or x23 or x24 or x25 or x26 or x27 or x28 or x29 or x2A or x2B or x2C or x2D or x2E or x2F or x30 or x31 or x32 or x33 or x34 or x35 or x36 or x37 or x38 or x39 or x3A or x3B or x3C or x3D or x3E or x3F or x40 or x41 or x42 or x43 or x44 or x45 or x46 or x47 or x48 or x49 or x4A or x4B or x4C or x4D or x4E or x4F or x50 or x51 or x52 or x53 or x54 or x55 or x56 or x57 or x58 or x59 or x5A or x5B or x5C or x5D or x5E or x5F or x60 or x61 or x62 or x63 or x64 or x65 or x66 or x67 or x68 or x69 or x6A or x6B or x6C or x6D or x6E or x6F or x70 or x71 or x72 or x73 or x74 or x75 or x76 or x77 or x78 or x79 or x7A or x7B or x7C or x7D or x7E or x7F or x80 or x81 or x82 or x83 or x84 or x85 or x86 or x87 or x88 or x89 or x8A or x8B or x8C or x8D or x8E or x8F or x90 or x91 or x92 or x93 or x94 or x95 or x96 or x97 or x98 or x99 or x9A or x9B or x9C or x9D or x9E or x9F or xA0 or xA1 or xA2 or xA3 or xA4 or xA5 or xA6 or xA7 or xA8 or xA9 or xAA or xAB or xAC or xAD or xAE or xAF or xB0 or xB1 or xB2 or xB3 or xB4 or xB5 or xB6 or xB7 or xB8 or xB9 or xBA or xBB or xBC or xBD or xBE or xBF or xC0 or xC1 or xC2 or xC3 or xC4 or xC5 or xC6 or xC7 or xC8 or xC9 or xCA or xCB or xCC or xCD or xCE or xCF or xD0 or xD1 or xD2 or xD3 or xD4 or xD5 or xD6 or xD7 or xD8 or xD9 or xDA or xDB or xDC or xDD or xDE or xDF or xE0 or xE1 or xE2 or xE3 or xE4 or xE5 or xE6 or xE7 or xE8 or xE9 or xEA or xEB or xEC or xED or xEE or xEF or xF0 or xF1 or xF2 or xF3 or xF4 or xF5 or xF6 or xF7 or xF8 or xF9 or xFA or xFB or xFC or xFD or xFE or xFF map { it.text }
         private val VCHAR by x21 or x22 or x23 or x24 or x25 or x26 or x27 or x28 or x29 or x2A or x2B or x2C or x2D or x2E or x2F or x30 or x31 or x32 or x33 or x34 or x35 or x36 or x37 or x38 or x39 or x3A or x3B or x3C or x3D or x3E or x3F or x40 or x41 or x42 or x43 or x44 or x45 or x46 or x47 or x48 or x49 or x4A or x4B or x4C or x4D or x4E or x4F or x50 or x51 or x52 or x53 or x54 or x55 or x56 or x57 or x58 or x59 or x5A or x5B or x5C or x5D or x5E or x5F or x60 or x61 or x62 or x63 or x64 or x65 or x66 or x67 or x68 or x69 or x6A or x6B or x6C or x6D or x6E or x6F or x70 or x71 or x72 or x73 or x74 or x75 or x76 or x77 or x78 or x79 or x7A or x7B or x7C or x7D or x7E map { it.text }
 
-        private val colonAndSlashes by literalToken("://")
-
         private val exclamation by x21 map { it.text }
         private val dollar by x24 map { it.text }
         private val ampersand by x26 map { it.text }
@@ -317,6 +315,8 @@ data class Sdp(
         private val underscore by x5F map { it.text }
         private val tilde by x7E map { it.text }
         private val percent by x25 map { it.text }
+        private val lt by x3C map { it.text }
+        private val gt by x3E map { it.text }
 
         private val zero by x30 map { it.text }
         private val one by x31 map { it.text }
@@ -497,8 +497,7 @@ data class Sdp(
 //                (optional5h16 * doubleColon * h16 map { it.text3 }) or
 //                (optional6h16 * doubleColon map { it.text2 })
 
-        // IPv6address    =  hexpart [ ":" IPv4address ]
-
+//         IPv6address    =  hexpart [ ":" IPv4address ]
         internal val IPv6Address: Parser<String> by hexpart //* optional(colon * IPv4Address) map { it.text2 }
 
         // IPvFuture     = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )
@@ -536,21 +535,6 @@ data class Sdp(
         internal val URI: Parser<String> by schema * colon * hierPart * optionalQuestionAndQuery * optionalHashAndFragment map { it.text5 }
 
         // ==================== END OF URI ABNF ====================
-
-
-
-
-//        // decimal-uchar =      DIGIT
-//        //                      / POS-DIGIT DIGIT
-//        //                      / ("1" 2*(DIGIT))
-//        //                      / ("2" ("0"/"1"/"2"/"3"/"4") DIGIT)
-//        //                      / ("2" "5" ("0"/"1"/"2"/"3"/"4"/"5"))
-//        val decimalUchar: Parser<String> by
-//                (two and five and (zero or one or two or three or four or five) map { (a, b, c) -> a + b + c }) or
-//                ((two and (zero or one or two or three or four) and DIGIT) map { (a, b, c) -> a + b + c }) or
-//                ((one and (2 times DIGIT)) map { (a, b) -> a + b.text }) or
-//                ((POS_DIGIT and DIGIT) map { (a, b) -> a + b }) or
-//                DIGIT
 
         // Data types
         // integer = POS-DIGIT *DIGIT
@@ -619,10 +603,10 @@ data class Sdp(
         internal val ip4Multicast by m1 and (3 times (dot and decimalUchar)) and slash and ttl and ((0..1 times (slash and integer))) map { (a, b, c, d, e) -> a + b.text2 + c + d + e.text2 }
 
         // multicast-address =   IP4-multicast / IP6-multicast / FQDN / extn-addr
-        internal val multicastAddress by ip4Multicast / ip6Multicast / FQDN / extnAddr
+        internal val multicastAddress by ip4Multicast orNext  ip6Multicast orNext  FQDN orNext  extnAddr
 
         // unicast-address =     IP4-address / IP6-address / FQDN / extn-addr
-        internal val unicastAddress by ip4Address / ip6Address / FQDN  / extnAddr
+        internal val unicastAddress by ip4Address orNext  ip6Address orNext  FQDN  orNext extnAddr
 
         // ; sub-rules of 'm='
 
@@ -657,10 +641,57 @@ data class Sdp(
         // ; sub-rules of 'u='
         // uri =                 URI-reference
         //                       ; see RFC 3986
-        val uri by URI
+        private val uri by URI
+
+        // ; sub-rules of 'p='
+        //   phone =               ["+"] DIGIT 1*(SP / "-" / DIGIT)
+        private val optionalPlus: Parser<String> by optional(plus) map { it ?: "" }
+        private val phone by optionalPlus and DIGIT and oneOrMoreAsText(SP or minus or DIGIT) map { it.text3 }
+
+        //   phone-number =        phone *SP "(" 1*email-safe ")" /
+        //                         1*email-safe "<" phone ">" /
+        //                         phone
+        private val phoneNumber by
+                ((phone and zeroOrMoreAsText(SP) and leftParenthesis and oneOrMoreAsText(emailSafe) and rightParenthesis) map { it.text5 }) or
+                (oneOrMoreAsText(emailSafe) and lt and phone and gt map { it.text4 }) or
+                phone
+
+        //; sub-rules of 'c='
+        //   connection-address =  multicast-address / unicast-address
+        private val connectionAddress: Parser<String> by multicastAddress or unicastAddress
+
+        //; sub-rules of 'b='
+        //   bwtype =              token
+        private val bwtype: Parser<String> by token
+
+        //   bandwidth =           1*DIGIT
+        private val bandwidth: Parser<String> by oneOrMore(DIGIT) map { it.text }
+
+        // ; sub-rules of 't='
+        // time =                POS-DIGIT 9*DIGIT
+        //                         ; Decimal representation of NTP time in
+        //                         ; seconds since 1900.  The representation
+        //                         ; of NTP time is an unbounded length field
+        //                         ; containing at least 10 digits.  Unlike the
+        //                         ; 64-bit representation used elsewhere, time
+        //                         ; in SDP does not wrap in the year 2036.
+        private val time: Parser<String> by POS_DIGIT and (9 timesAsText  DIGIT) map { it.text2 }
+
+        // stop-time =           time / "0"
+        private val stopTime: Parser<String> by time or zero
+
+        // start-time =          time / "0"
+        private val startTime: Parser<String> by time or zero
+
+        //; sub-rules of 'r=' and 'z='
+        // fixed-len-time-unit = %x64 / %x68 / %x6d / %x73
+        private val fixedLenTimeUnit: Parser<String> = d or h or m or s
+
+        // typed-time =          1*DIGIT [fixed-len-time-unit]
+        private val optionalFixedLineUnit: Parser<String> by optional(fixedLenTimeUnit) map { it ?: "" }
+        private val typedTime: Parser<String> by 1..Int.MAX_VALUE timesAsText DIGIT and optionalFixedLineUnit map { it.text2 }
 
         // ; sub-rules of 'k='
-
         // base64-char =         ALPHA / DIGIT / "+" / "/"
         internal val base64Char by ALPHA or DIGIT or plus or slash
 
@@ -686,7 +717,6 @@ data class Sdp(
                     ((u * r * i * colon * uri) map { it.text5 })
 
         private val sdp by schema and
-                skip(colonAndSlashes) and
                 optional(userInfo) map { (scheme, userInfo) ->
             Sdp(scheme, Authority(userInfo, "", null), null)
         }
@@ -708,4 +738,5 @@ private val List<TokenMatch>.textOfTokens get() = joinToString(separator = "") {
 private infix fun Int.timesAsText(parser: Parser<String>): Parser<String> = this times parser map { it.text }
 private infix fun IntRange.timesAsText(parser: Parser<String>): Parser<String> = this times parser map { it.text }
 private fun zeroOrMoreAsText(parser: Parser<String>): Parser<String> = zeroOrMore(parser) map { it.text }
+private fun oneOrMoreAsText(parser: Parser<String>): Parser<String> = oneOrMore(parser) map { it.text }
 // format: on

@@ -39,6 +39,9 @@ class SdpTest {
             "2001:FF42:130F::876A:130B",
             "2001:FF42:130F::130B",
             "2001:FF42:130F::",
+            "::1",
+            "::",
+            "ff00::"
         )
 
         ip6Adresses.forEach {
@@ -54,14 +57,15 @@ class SdpTest {
     }
 
     @Test
-    fun testUriIPV6Address() {
+    fun testIPV6Address() {
         val ip6Adresses = listOf(
-            "2001:0000:130F:0000:0000:09C0:876A:130B",  // 6( h16 ":" ) ls32
-            "::0000:130F:0000:0000:09C0:876A:130B",     // "::" 5( h16 ":" ) ls32
-            "2001::130F:0000:0000:09C0:876A:130B",      // [               h16 ] "::" 4( h16 ":" ) ls32
-            "0000::0000:0000:09C0:876A:130B",           // [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
-            "2001:0000::0000:0000:09C0:876A:130B",      // [ *1( h16 ":" ) h16 ] "::" 3( h16 ":" ) ls32
+            "2001:0000:130F:0000:0000:09C0:876A:130B",
+            "::0000:130F:0000:0000:09C0:876A:130B",
+            "2001::130F:0000:0000:09C0:876A:130B",
+            "0000::0000:0000:09C0:876A:130B",
+            "2001:0000::0000:0000:09C0:876A:130B",
             "2001:db8::9:01",
+            "::"
         )
 
         ip6Adresses.forEach {
@@ -163,6 +167,29 @@ class SdpTest {
         unicastAddresses.forEach {
             val actual = runCatching {
                 Sdp.unicastAddress.tryParseToEnd(tokenizer.tokenize(it), 0).toParsedOrThrow().value
+            }
+            assertEquals(
+                it,
+                actual.getOrNull(),
+                "Failed to parse $it: ${actual.exceptionOrNull()}"
+            )
+        }
+    }
+
+    @Test
+    fun testURI() {
+        val uris = listOf(
+            "http://a/b/c/d;p?q",
+            "http://a/b/c/d;p?q#s",
+            "http://xn--99zt52a.w3.mag.keio.ac.jp",
+            "http://www.pierobon.org/iis/review1.htm.html#one",
+            "http://user:password@www.pierobon.org/iis/review1.htm.html#one",
+            "user:password@www.pierobon.org/iis/review1.htm.html#one",
+        )
+
+        uris.forEach {
+            val actual = runCatching {
+                Sdp.URI.tryParseToEnd(tokenizer.tokenize(it), 0).toParsedOrThrow().value
             }
             assertEquals(
                 it,
