@@ -17,6 +17,7 @@ sealed class Field(val type: FieldType<*>) {
             val parseResult = when (val lineType = line.firstOrNull()) {
                 FieldType.Version.type -> FieldType.Version.parser.tryParseToEnd(line)
                 FieldType.Origin.type -> FieldType.Origin.parser.tryParseToEnd(line)
+                FieldType.SessionName.type -> FieldType.SessionName.parser.tryParseToEnd(line)
                 else -> throw SdpParseException("Unknown field type \"$lineType=\" in line: $lineNumber")
             }
 
@@ -32,6 +33,7 @@ sealed class Field(val type: FieldType<*>) {
 sealed class FieldType<T>(val type: Char, internal val parser: BaseGrammar<T>) {
     data object Version : FieldType<com.shepeliev.ksdp.Version>('v', com.shepeliev.ksdp.Version.Grammar)
     data object Origin : FieldType<com.shepeliev.ksdp.Origin>('o', com.shepeliev.ksdp.Origin.Grammar)
+    data object SessionName : FieldType<com.shepeliev.ksdp.SessionName>('s', com.shepeliev.ksdp.SessionName.Grammar)
 
     operator fun component1() = type
     operator fun component2() = parser

@@ -8,9 +8,7 @@ import com.shepeliev.ksdp.Sdp.Companion.FQDN
 import com.shepeliev.ksdp.Sdp.Companion.ip4Address
 import com.shepeliev.ksdp.Sdp.Companion.ip6Address
 import com.shepeliev.ksdp.grammar.*
-import com.shepeliev.ksdp.grammar.DIGIT
 import com.shepeliev.ksdp.grammar.oneOrMoreAsText
-import com.shepeliev.ksdp.grammar.token
 
 data class Origin(
     val username: String,
@@ -28,12 +26,11 @@ data class Origin(
         private val sessVer: Parser<String> by oneOrMoreAsText(DIGIT)
         private val networkType: Parser<String> by token
         private val addressType: Parser<String> by token
-        private val address: Parser<String> by token
 
         // unicast-address =     IP4-address / IP6-address / FQDN / extn-addr
-        internal val unicastAddress by ip4Address orNext ip6Address orNext FQDN orNext extnAddr
+        private val unicastAddress by ip4Address orNext ip6Address orNext FQDN orNext extnAddr
 
-        private val origin: Parser<Origin> by -o * -equal * username * -SP * sessId * -SP * sessVer * -SP * networkType * -SP * addressType * -SP * unicastAddress map { (username, sessionId, sessionVersion, networkType, addressType, address) ->
+        private val origin: Parser<Origin> by -o * -eq * username * -SP * sessId * -SP * sessVer * -SP * networkType * -SP * addressType * -SP * unicastAddress map { (username, sessionId, sessionVersion, networkType, addressType, address) ->
             Origin(username, sessionId.toLong(), sessionVersion.toLong(), networkType, addressType, address)
         }
 

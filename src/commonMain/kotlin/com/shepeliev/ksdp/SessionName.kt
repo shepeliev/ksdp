@@ -10,14 +10,14 @@ import com.shepeliev.ksdp.grammar.eq
 import com.shepeliev.ksdp.grammar.oneOrMoreAsText
 import com.shepeliev.ksdp.grammar.v
 
-data class Version(val value: Int = 0) : Field(FieldType.Version) {
+data class SessionName(val value: String = " ") : Field(FieldType.Version) {
     override fun encode(): String = "${type.type}=$value"
 
     override fun toString(): String = encode()
 
-    internal companion object Grammar : BaseGrammar<Version>() {
-        // proto-version =       %x76 "=" 1*DIGIT
-        private val protoVersion by -v and -eq and oneOrMoreAsText(DIGIT) map { Version(it.toInt()) }
-        override val rootParser: Parser<Version> = protoVersion
+    internal companion object Grammar : BaseGrammar<SessionName>() {
+        // session-name-field =  %x73 "=" text
+        private val protoVersion by -s and -eq and text map { SessionName(it) }
+        override val rootParser: Parser<SessionName> = protoVersion
     }
 }
