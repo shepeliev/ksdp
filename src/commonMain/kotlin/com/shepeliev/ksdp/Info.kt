@@ -5,7 +5,7 @@ import com.github.h0tk3y.betterParse.combinators.unaryMinus
 import com.github.h0tk3y.betterParse.parser.Parser
 import com.shepeliev.ksdp.grammar.*
 
-public class SessionName internal constructor(
+public class Info internal constructor(
     private val line: String,
     private val lineNumber: Int = 1,
 ) : Field(Type.SESSION_NAME) {
@@ -16,7 +16,7 @@ public class SessionName internal constructor(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as SessionName
+        other as Info
 
         return value == other.value
     }
@@ -27,11 +27,14 @@ public class SessionName internal constructor(
 
     override fun toString(): String = line
 
-    private companion object Grammar : BaseGrammar<String>() {
-        // session-name-field =  "s=" text
-        private val protoVersion by -s and -eq and text
+    internal companion object Grammar : BaseGrammar<String>() {
+        // information-field =  "i=" text
+        private val protoVersion by -i and -eq and text
         override val rootParser: Parser<String> = protoVersion
     }
 }
 
-public fun SessionName(text: String = " "): SessionName = SessionName(line = "${Field.Type.SESSION_NAME.type}=$text")
+public fun Info(text: String): Info {
+    require(text.isNotEmpty()) { "Info text must not be empty." }
+    return Info(line = "${Field.Type.INFO.type}=$text")
+}

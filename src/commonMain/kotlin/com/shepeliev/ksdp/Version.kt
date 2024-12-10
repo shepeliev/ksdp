@@ -7,20 +7,12 @@ import com.github.h0tk3y.betterParse.parser.Parser
 import com.shepeliev.ksdp.grammar.*
 import com.shepeliev.ksdp.grammar.oneOrMoreAsText
 
-//data class Version(val value: Int = 0) : Field(FieldType.Version) {
-//    override fun encode(): String = "${type.type}=$value"
-//
-//    override fun toString(): String = encode()
-//
-//    internal companion object Grammar : BaseGrammar<Version>() {
-//        // proto-version =       %x76 "=" 1*DIGIT
-//        private val protoVersion by -v and -eq and oneOrMoreAsText(DIGIT) map { Version(it.toInt()) }
-//        override val rootParser: Parser<Version> = protoVersion
-//    }
-//}
+public class Version internal constructor(
+    private val line: String,
+    private val lineNumber: Int = 1
+) : Field(Type.VERSION) {
 
-class Version internal constructor(private val line: String, private val lineNumber: Int = 1) : Field(Type.VERSION) {
-    val value by lazy { parse(line, lineNumber) }
+    public val value by lazy { parse(line, lineNumber) }
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -42,8 +34,8 @@ class Version internal constructor(private val line: String, private val lineNum
 
     override fun toString(): String = line
 
-    internal companion object : BaseGrammar<Int>() {
-        // proto-version =       %x76 "=" 1*DIGIT
+    private companion object : BaseGrammar<Int>() {
+        // proto-version =       "v=" 1*DIGIT
         private val protoVersion by -v and -eq and oneOrMoreAsText(DIGIT) map { it.toInt() }
         override val rootParser: Parser<Int> = protoVersion
     }

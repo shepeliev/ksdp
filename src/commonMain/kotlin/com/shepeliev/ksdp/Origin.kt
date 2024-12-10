@@ -10,16 +10,16 @@ import com.shepeliev.ksdp.Sdp.Companion.ip6Address
 import com.shepeliev.ksdp.grammar.*
 import com.shepeliev.ksdp.grammar.oneOrMoreAsText
 
-data class Origin internal constructor(private val line: String, private val lineNumber: Int = 1) :
+public data class Origin internal constructor(private val line: String, private val lineNumber: Int = 1) :
     Field(Type.ORIGIN) {
     private val _origin: _Origin by lazy { parse(line, lineNumber) }
 
-    val username: String by _origin::username
-    val sessionId: Long by _origin::sessionId
-    val sessionVersion: Long by _origin::sessionVersion
-    val networkType: String by _origin::networkType
-    val addressType: String by _origin::addressType
-    val address: String by _origin::address
+    public val username: String by _origin::username
+    public val sessionId: Long by _origin::sessionId
+    public val sessionVersion: Long by _origin::sessionVersion
+    public val networkType: String by _origin::networkType
+    public val addressType: String by _origin::addressType
+    public val address: String by _origin::address
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -46,14 +46,14 @@ data class Origin internal constructor(private val line: String, private val lin
         // unicast-address =     IP4-address / IP6-address / FQDN / extn-addr
         private val unicastAddress by ip4Address orNext ip6Address orNext FQDN orNext extnAddr
 
+        // origin-field =        "o=" username SP sess-id SP sess-version SP
+        //                       nettype SP addrtype SP unicast-address CRLF
         private val origin: Parser<_Origin> by -o * -eq * username * -SP * sessId * -SP * sessVer * -SP * networkType * -SP * addressType * -SP * unicastAddress map { (username, sessionId, sessionVersion, networkType, addressType, address) ->
             _Origin(username, sessionId.toLong(), sessionVersion.toLong(), networkType, addressType, address)
         }
 
         override val rootParser: Parser<_Origin> by origin
     }
-
-
 }
 
 private data class _Origin(
@@ -65,7 +65,7 @@ private data class _Origin(
     val address: String,
 )
 
-fun Origin(
+public fun Origin(
     username: String,
     sessionId: Long,
     sessionVersion: Long,
