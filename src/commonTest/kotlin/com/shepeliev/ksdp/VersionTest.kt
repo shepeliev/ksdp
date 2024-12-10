@@ -5,12 +5,12 @@ import kotlin.test.assertEquals
 
 class VersionTest {
     @Test
-    fun testEncode() {
-        assertEquals("v=0", Version(0).encode())
+    fun testToString() {
+        assertEquals("v=0", Version(0).toString())
     }
 
     @Test
     fun testParse() {
-        assertEquals(Version(0), Field.parse("v=0"))
+        assertEquals(Version(0), "v=0".sdpField())
     }
 }

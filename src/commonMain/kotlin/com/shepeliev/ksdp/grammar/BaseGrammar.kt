@@ -1,6 +1,10 @@
 package com.shepeliev.ksdp.grammar
 
 import com.github.h0tk3y.betterParse.grammar.Grammar
+import com.github.h0tk3y.betterParse.grammar.tryParseToEnd
+import com.github.h0tk3y.betterParse.parser.ParseException
+import com.github.h0tk3y.betterParse.parser.toParsedOrThrow
+import com.shepeliev.ksdp.SdpParseException
 
 abstract class BaseGrammar<out T> : Grammar<T>() {
     protected val x00 by _x00 // NUL
@@ -259,4 +263,12 @@ abstract class BaseGrammar<out T> : Grammar<T>() {
     protected val xFD by _xFD // <control-FD>
     protected val xFE by _xFE // <control-FE>
     protected val xFF by _xFF // <control-FF>
+}
+
+internal fun <T> Grammar<T>.parse(line: String, lineNumber: Int): T {
+    return try {
+        tryParseToEnd(line).toParsedOrThrow().value
+    } catch (e: ParseException) {
+        throw SdpParseException("Error parsing SDP at line $lineNumber: ${e.message}")
+    }
 }
