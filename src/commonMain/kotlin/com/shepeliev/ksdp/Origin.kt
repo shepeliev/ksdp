@@ -69,7 +69,7 @@ public fun Origin(
     username: String,
     sessionId: Long,
     sessionVersion: Long,
-    networkType: String,
-    addressType: String,
     address: String,
+    networkType: String = "IN",
+    addressType: String = "IP4",
 ): Origin = Origin("o=$username $sessionId $sessionVersion $networkType $addressType $address")
