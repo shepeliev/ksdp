@@ -31,6 +31,10 @@ class SessionDescriptionTest {
                     )
                 )
             ),
+            zoneAdjustments = listOf(
+                ZoneAdjustment(Instant.fromEpochSeconds(825434819), (-1).hours),
+                ZoneAdjustment(Instant.fromEpochSeconds(833473619), ZERO),
+            )
         )
 
         assertEquals(expectedSdp, TEST_PARSE_SDP.sessionDescription())
@@ -57,6 +61,10 @@ class SessionDescriptionTest {
                     )
                 )
             ),
+            zoneAdjustments = listOf(
+                ZoneAdjustment(Instant.fromEpochSeconds(825434819), (-1).hours),
+                ZoneAdjustment(Instant.fromEpochSeconds(833473619), ZERO),
+            ),
         )
 
         assertEquals(TEST_TO_STRING_SDP, sdp.toString())
@@ -76,6 +84,7 @@ b=RS:30\r
 t=3034423619 3042462419\r
 r=7d 1h 0 25h\r
 r=1d 30m 10s 25h\r
+z=3034423619 -1h 3042462419 0\r
 """.replace("\\r", "\r")
 
 private val TEST_TO_STRING_SDP = """v=0\r
@@ -91,4 +100,5 @@ b=RS:30\r
 t=3034423619 3042462419\r
 r=604800 3600 0 90000\r
 r=86400 1800 10 90000\r
+z=3034423619 -3600 3042462419 0\r
 """.replace("\\r", "\r")

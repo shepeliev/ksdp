@@ -3,23 +3,23 @@ package com.shepeliev.ksdp.parsers
 import com.shepeliev.ksdp.Origin
 import com.shepeliev.ksdp.SdpParseException
 
-internal object OriginParser : FieldParser<Origin> {
-    override fun parse(line: String, lineNumber: Int): Origin {
-        val (type, value) = line.split("=", limit = 2)
+internal object OriginParser : Parser<Origin> {
+    override fun parse(text: String, lineNumber: Int): Origin {
+        val (type, value) = text.split("=", limit = 2)
         require(type == "o") { "Unexpected field type '$type' at line $lineNumber. Expected type: 'o'" }
         val values = value.split(" ")
-        if (values.size != 6) throw  SdpParseException("Invalid 'o' field value at line: $lineNumber: $line")
+        if (values.size != 6) throw  SdpParseException("Invalid 'o' field value at line: $lineNumber: $text")
 
         val sessionId = try {
             values[1].toLong()
         } catch (e: NumberFormatException) {
-            throw SdpParseException("Invalid session id at line: $lineNumber: $line")
+            throw SdpParseException("Invalid session id at line: $lineNumber: $text")
         }
 
         val sessionVersion = try {
             values[2].toLong()
         } catch (e: NumberFormatException) {
-            throw SdpParseException("Invalid session version at line: $lineNumber: $line")
+            throw SdpParseException("Invalid session version at line: $lineNumber: $text")
         }
 
         return Origin(

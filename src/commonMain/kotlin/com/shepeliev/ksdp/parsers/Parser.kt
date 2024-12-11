@@ -2,9 +2,11 @@ package com.shepeliev.ksdp.parsers
 
 import com.shepeliev.ksdp.SdpParseException
 import com.shepeliev.ksdp.TimeDescription
+import com.shepeliev.ksdp.ZoneAdjustment
+import com.shepeliev.ksdp.checkIt
 
-internal fun interface FieldParser<T> {
-    fun parse(line: String, lineNumber: Int): T
+internal fun interface Parser<T> {
+    fun parse(text: String, lineNumber: Int): T
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -68,6 +70,10 @@ internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<String, A
             val lastTimeDescription = timeList.last()
             val repeats = lastTimeDescription.repeats + RepeatParser.parse(this, lineNumber)
             timeList[timeList.lastIndex] = lastTimeDescription.copy(repeats = repeats)
+        }
+
+        'z' -> {
+            parseResult["z"] = ZoneAdjustmentParser.parse(this, lineNumber)
         }
 
         else -> throw SdpParseException("Unknown field type at line $lineNumber: $fieldType")

@@ -1,3 +1,3 @@
 package com.shepeliev.ksdp.parsers
 
-internal object UriParser : FieldParser<String> by StringFieldParser('u')
+internal object UriParser : Parser<String> by StringParser('u')

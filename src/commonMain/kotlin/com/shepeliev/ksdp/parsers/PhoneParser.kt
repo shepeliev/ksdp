@@ -1,3 +1,3 @@
 package com.shepeliev.ksdp.parsers
 
-internal object PhoneParser : FieldParser<String> by StringFieldParser('p')
+internal object PhoneParser : Parser<String> by StringParser('p')

@@ -5,9 +5,9 @@ import com.shepeliev.ksdp.Time
 import com.shepeliev.ksdp.TimeDescription
 import com.shepeliev.ksdp.utils.ntpTimeToInstant
 
-internal object TimeDescriptionParser : FieldParser<TimeDescription> {
-    override fun parse(line: String, lineNumber: Int): TimeDescription {
-        val (fieldType, value) = line.split("=")
+internal object TimeDescriptionParser : Parser<TimeDescription> {
+    override fun parse(text: String, lineNumber: Int): TimeDescription {
+        val (fieldType, value) = text.split("=")
         require(fieldType == "t") { "\"Unexpected field type '$fieldType' at line $lineNumber. Expected type: 't'\"" }
         val (start, stop) = value.split(" ")
             .map {

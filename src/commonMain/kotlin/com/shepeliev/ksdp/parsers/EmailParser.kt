@@ -1,3 +1,3 @@
 package com.shepeliev.ksdp.parsers
 
-internal object EmailParser : FieldParser<String> by StringFieldParser('e')
+internal object EmailParser : Parser<String> by StringParser('e')

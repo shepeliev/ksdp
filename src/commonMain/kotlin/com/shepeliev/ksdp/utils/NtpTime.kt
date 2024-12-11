@@ -7,7 +7,7 @@ import kotlinx.datetime.Instant
  * Converts Kotlin [Instant] to NTP time used in SDP.
  * The Network Time Protocol (NTP) is defined in RFC 1305.
  */
-public fun Instant.toNtpTime(): Long = epochSeconds + NTP_TIME_OFFSET
+public fun Instant.toNtp(): Long = epochSeconds + NTP_TIME_OFFSET
 
 /**
  * Converts NTP time used in SDP to Kotlin [Instant].

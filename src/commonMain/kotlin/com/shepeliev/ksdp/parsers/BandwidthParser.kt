@@ -3,9 +3,9 @@ package com.shepeliev.ksdp.parsers
 import com.shepeliev.ksdp.Bandwidth
 import com.shepeliev.ksdp.SdpParseException
 
-internal object BandwidthParser : FieldParser<Bandwidth> {
-    override fun parse(line: String, lineNumber: Int): Bandwidth {
-        val (fieldType, value) = line.split("=")
+internal object BandwidthParser : Parser<Bandwidth> {
+    override fun parse(text: String, lineNumber: Int): Bandwidth {
+        val (fieldType, value) = text.split("=")
         require(fieldType == "b") { "Unexpected field type '$fieldType' at line $lineNumber. Expected type: 'b'" }
 
         val (bandwidthType, bandwidth) = value.split(":")

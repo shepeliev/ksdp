@@ -1,6 +1,6 @@
 package com.shepeliev.ksdp
 
-import com.shepeliev.ksdp.utils.toNtpTime
+import com.shepeliev.ksdp.utils.toNtp
 import kotlinx.datetime.Instant
 
 /**
@@ -48,6 +48,6 @@ public data class TimeDescription @Throws(SdpException::class) constructor(
  * Please refer to IETF RFC 2327 for a description of SDP.
  */
 public data class Time(val start: Instant, val end: Instant) {
-    override fun toString(): String = "${start.toNtpTime()} ${end.toNtpTime()}"
+    override fun toString(): String = "${start.toNtp()} ${end.toNtp()}"
 }
 
