@@ -13,6 +13,7 @@ class SessionDescriptionTest {
             info = "A Seminar on the session description protocol",
             uri = "http://www.example.com/seminars/sdp.pdf",
             email = "j.doe@example.com (Jane Doe)",
+            phone = "+1 617 555-5555",
         )
 
         assertEquals(expectedSdp, SDP.sessionDescription())
@@ -27,6 +28,7 @@ class SessionDescriptionTest {
             info = "A Seminar on the session description protocol",
             uri = "http://www.example.com/seminars/sdp.pdf",
             email = "j.doe@example.com (Jane Doe)",
+            phone = "+1 617 555-5555",
         )
 
         assertEquals(SDP, sdp.toString())
@@ -39,4 +41,5 @@ s=SDP Seminar\r
 i=A Seminar on the session description protocol\r
 u=http://www.example.com/seminars/sdp.pdf\r
 e=j.doe@example.com (Jane Doe)\r
+p=+1 617 555-5555\r
 """.replace("\\r", "\r")

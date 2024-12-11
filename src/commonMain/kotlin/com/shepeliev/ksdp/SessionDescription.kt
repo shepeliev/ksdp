@@ -20,6 +20,7 @@ public data class SessionDescription(
     val info: String? = null,
     val uri: String? = null,
     val email: String? = null,
+    val phone: String? = null,
 ) {
 
     override fun toString(): String = buildString {
@@ -39,6 +40,10 @@ public data class SessionDescription(
         }
         email?.let {
             append("e=$it")
+            append("\r\n")
+        }
+        phone?.let {
+            append("p=$it")
             append("\r\n")
         }
     }
@@ -67,5 +72,6 @@ public fun String.sessionDescription(): SessionDescription {
         info = parseResults["i"] as String?,
         uri = parseResults["u"] as String?,
         email = parseResults["e"] as String?,
+        phone = parseResults["p"] as String?,
     )
 }
