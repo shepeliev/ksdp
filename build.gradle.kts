@@ -6,6 +6,8 @@ group = "com.shepeliev"
 version = "1.0-SNAPSHOT"
 
 kotlin {
+    explicitApi()
+
     jvm()
 
     sourceSets {

@@ -6,25 +6,25 @@ import kotlin.test.assertEquals
 class SessionDescriptionTest {
     @Test
     fun testParse() {
-        val sdp = SDP.sessionDescription()
-
-        assertEquals(Version(0), sdp.version)
-        assertEquals(
-            Origin("jdoe", 2890844526, 2890842807, "10.47.16.5"),
-            sdp.origin
+        val expectedSdp = SessionDescription(
+            version = 0,
+            origin = Origin("jdoe", 2890844526, 2890842807, "10.47.16.5"),
+            sessionName = "SDP Seminar",
+            info = "A Seminar on the session description protocol",
+            uri = "http://www.example.com/seminars/sdp.pdf"
         )
-        assertEquals(SessionName("SDP Seminar"), sdp.sessionName)
-        assertEquals(Info("A Seminar on the session description protocol"), sdp.info)
-        assertEquals(Uri("http://www.example.com/seminars/sdp.pdf"), sdp.uri)
+
+        assertEquals(expectedSdp, SDP.sessionDescription())
     }
 
     @Test
     fun tesToString() {
         val sdp = SessionDescription(
+            version = 0,
             origin = Origin("jdoe", 2890844526, 2890842807, "10.47.16.5"),
-            sessionName = SessionName("SDP Seminar"),
-            info = Info("A Seminar on the session description protocol"),
-            uri = Uri("http://www.example.com/seminars/sdp.pdf")
+            sessionName = "SDP Seminar",
+            info = "A Seminar on the session description protocol",
+            uri = "http://www.example.com/seminars/sdp.pdf"
         )
 
         assertEquals(SDP, sdp.toString())
