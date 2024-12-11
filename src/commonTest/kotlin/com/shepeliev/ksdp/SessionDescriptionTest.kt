@@ -36,6 +36,10 @@ class SessionDescriptionTest {
                 ZoneAdjustment(Instant.fromEpochSeconds(833473619), ZERO),
             ),
             key = Key.Prompt,
+            attributes = listOf(
+                Attribute.NameValue("group","BUNDLE 0 1"),
+                Attribute.Identity("extmap-allow-mixed"),
+            ),
         )
 
         assertEquals(expectedSdp, TEST_PARSE_SDP.sessionDescription())
@@ -67,6 +71,10 @@ class SessionDescriptionTest {
                 ZoneAdjustment(Instant.fromEpochSeconds(833473619), ZERO),
             ),
             key = Key.Clear("password"),
+            attributes = listOf(
+                Attribute.NameValue("group","BUNDLE 0 1"),
+                Attribute.Identity("extmap-allow-mixed"),
+            ),
         )
 
         assertEquals(TEST_TO_STRING_SDP, sdp.toString())
@@ -88,6 +96,8 @@ r=7d 1h 0 25h\r
 r=1d 30m 10s 25h\r
 z=3034423619 -1h 3042462419 0\r
 k=prompt\r
+a=group:BUNDLE 0 1\r
+a=extmap-allow-mixed\r
 """.replace("\\r", "\r")
 
 private val TEST_TO_STRING_SDP = """v=0\r
@@ -105,4 +115,6 @@ r=604800 3600 0 90000\r
 r=86400 1800 10 90000\r
 z=3034423619 -3600 3042462419 0\r
 k=clear:password\r
+a=group:BUNDLE 0 1\r
+a=extmap-allow-mixed\r
 """.replace("\\r", "\r")

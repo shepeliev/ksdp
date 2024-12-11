@@ -16,16 +16,17 @@ import com.shepeliev.ksdp.parsers.parseLine
 public data class SessionDescription(
     val origin: Origin,
     val sessionName: String,
+    val time: List<TimeDescription>,
     val version: Int = 0,
     val info: String? = null,
     val uri: String? = null,
     val email: String? = null,
     val phone: String? = null,
-    val time: List<TimeDescription>,
     val connection: Connection? = null,
     val bandwidth: List<Bandwidth> = emptyList(),
     val zoneAdjustments: List<ZoneAdjustment>? = null,
     val key: Key? = null,
+    val attributes: List<Attribute>? = null,
 ) {
 
     override fun toString(): String = buildString {
@@ -75,6 +76,10 @@ public data class SessionDescription(
             append("k=$it")
             append("\r\n")
         }
+        attributes?.forEach {
+            append("a=$it")
+            append("\r\n")
+        }
     }
 }
 
@@ -109,5 +114,6 @@ public fun String.sessionDescription(): SessionDescription {
         bandwidth = parseResults['b'] as List<Bandwidth>,
         zoneAdjustments = parseResults['z'] as List<ZoneAdjustment>?,
         key = parseResults['k'] as Key?,
+        attributes = parseResults['a'] as List<Attribute>?,
     )
 }

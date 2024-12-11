@@ -1,9 +1,6 @@
 package com.shepeliev.ksdp.parsers
 
-import com.shepeliev.ksdp.Bandwidth
-import com.shepeliev.ksdp.SdpParseException
-import com.shepeliev.ksdp.TimeDescription
-import com.shepeliev.ksdp.checkIt
+import com.shepeliev.ksdp.*
 
 internal fun interface Parser<T> {
     fun parse(text: String, lineNumber: Int): T
@@ -12,6 +9,7 @@ internal fun interface Parser<T> {
 @Suppress("UNCHECKED_CAST")
 internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<Char, Any>) {
     require(this.isNotBlank()) { "Blank line: $lineNumber" }
+    checkIt(this.contains('=')) { "No '=' found at line $lineNumber: $this" }
 
     fun checkNoDuplicate(fieldType: Char) {
         checkIt(!parseResult.containsKey(fieldType)) { "Duplicate '$fieldType' field at line $lineNumber." }
@@ -80,6 +78,11 @@ internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<Char, Any
 
         'k' -> {
             parseUnicField(fieldType, KeyParser)
+        }
+
+        'a' -> {
+            val attributeList = parseResult.getOrPut('a') { mutableListOf<Attribute>() } as MutableList<Attribute>
+            attributeList += AttributeParser.parse(this, lineNumber)
         }
 
         else -> throw SdpParseException("Unknown field type at line $lineNumber: $this")
