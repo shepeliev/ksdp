@@ -1,6 +1,7 @@
 package com.shepeliev.ksdp.parsers
 
 import com.shepeliev.ksdp.SdpParseException
+import com.shepeliev.ksdp.TimeDescription
 
 internal fun interface FieldParser<T> {
     fun parse(line: String, lineNumber: Int): T
@@ -54,6 +55,19 @@ internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<String, A
         'b' -> {
             val bandwidthList = parseResult["b"] as MutableList<com.shepeliev.ksdp.Bandwidth>
             bandwidthList += BandwidthParser.parse(this, lineNumber)
+        }
+
+        't' -> {
+            val timeList = parseResult["t"] as MutableList<TimeDescription>
+            timeList += TimeDescriptionParser.parse(this, lineNumber)
+        }
+
+        'r' -> {
+            val timeList = parseResult["t"] as MutableList<TimeDescription>
+            if (timeList.isEmpty()) throw SdpParseException("Repeat field (r) must be after time field (t) at line $lineNumber.")
+            val lastTimeDescription = timeList.last()
+            val repeats = lastTimeDescription.repeats + RepeatParser.parse(this, lineNumber)
+            timeList[timeList.lastIndex] = lastTimeDescription.copy(repeats = repeats)
         }
 
         else -> throw SdpParseException("Unknown field type at line $lineNumber: $fieldType")

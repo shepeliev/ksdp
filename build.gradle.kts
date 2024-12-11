@@ -14,10 +14,11 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.kermit)
             implementation(libs.betterParse)
+            api(libs.kotlin.datetime)
         }
 
         commonTest.dependencies {
-            implementation(libs.koltin.test)
+            implementation(libs.kotlin.test)
         }
     }
 }
