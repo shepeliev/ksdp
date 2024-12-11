@@ -78,6 +78,10 @@ internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<Char, Any
             parseResult['z'] = ZoneAdjustmentParser.parse(this, lineNumber)
         }
 
+        'k' -> {
+            parseUnicField(fieldType, KeyParser)
+        }
+
         else -> throw SdpParseException("Unknown field type at line $lineNumber: $this")
     }
 }

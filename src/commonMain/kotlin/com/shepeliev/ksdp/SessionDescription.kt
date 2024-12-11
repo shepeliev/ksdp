@@ -25,6 +25,7 @@ public data class SessionDescription(
     val connection: Connection? = null,
     val bandwidth: List<Bandwidth> = emptyList(),
     val zoneAdjustments: List<ZoneAdjustment>? = null,
+    val key: Key? = null,
 ) {
 
     override fun toString(): String = buildString {
@@ -70,6 +71,10 @@ public data class SessionDescription(
             append("z=${it.joinToString(" ")}")
             append("\r\n")
         }
+        key?.let {
+            append("k=$it")
+            append("\r\n")
+        }
     }
 }
 
@@ -103,5 +108,6 @@ public fun String.sessionDescription(): SessionDescription {
         connection = parseResults['c'] as Connection?,
         bandwidth = parseResults['b'] as List<Bandwidth>,
         zoneAdjustments = parseResults['z'] as List<ZoneAdjustment>?,
+        key = parseResults['k'] as Key?,
     )
 }
