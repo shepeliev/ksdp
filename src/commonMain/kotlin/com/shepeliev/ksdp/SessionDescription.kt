@@ -78,32 +78,30 @@ public data class SessionDescription(
  */
 @Suppress("UNCHECKED_CAST")
 public fun String.sessionDescription(): SessionDescription {
-    val parseResults = mutableMapOf<String, Any>(
-        "b" to mutableListOf<Bandwidth>(),
-        "t" to mutableListOf<TimeDescription>()
-    )
+    val parseResults = mutableMapOf<Char, Any>()
 
     this.trim().lines().forEachIndexed { index, line ->
         line.parseLine(index + 1, parseResults)
     }
 
     when {
-        parseResults["v"] == null -> throw SdpParseException("SDP malformed: \"v\" field is required.")
-        parseResults["o"] == null -> throw SdpParseException("SDP malformed: \"o\" field is required.")
-        parseResults["s"] == null -> throw SdpParseException("SDP malformed: \"s\" field is required.")
+        parseResults['v'] == null -> throw SdpParseException("SDP malformed: 'v' field is required.")
+        parseResults['o'] == null -> throw SdpParseException("SDP malformed: 'o' field is required.")
+        parseResults['s'] == null -> throw SdpParseException("SDP malformed: 's' field is required.")
+        parseResults['t'] == null -> throw SdpParseException("SDP malformed: at least one 't' field is required.")
     }
 
     return SessionDescription(
-        version = parseResults["v"] as Int,
-        origin = parseResults["o"] as Origin,
-        sessionName = parseResults["s"] as String,
-        info = parseResults["i"] as String?,
-        uri = parseResults["u"] as String?,
-        email = parseResults["e"] as String?,
-        phone = parseResults["p"] as String?,
-        time = parseResults["t"] as List<TimeDescription>,
-        connection = parseResults["c"] as Connection?,
-        bandwidth = parseResults["b"] as List<Bandwidth>,
-        zoneAdjustments = parseResults["z"] as List<ZoneAdjustment>?,
+        version = parseResults['v'] as Int,
+        origin = parseResults['o'] as Origin,
+        sessionName = parseResults['s'] as String,
+        info = parseResults['i'] as String?,
+        uri = parseResults['u'] as String?,
+        email = parseResults['e'] as String?,
+        phone = parseResults['p'] as String?,
+        time = parseResults['t'] as List<TimeDescription>,
+        connection = parseResults['c'] as Connection?,
+        bandwidth = parseResults['b'] as List<Bandwidth>,
+        zoneAdjustments = parseResults['z'] as List<ZoneAdjustment>?,
     )
 }

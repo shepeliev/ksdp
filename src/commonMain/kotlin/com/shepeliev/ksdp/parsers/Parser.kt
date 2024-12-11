@@ -1,8 +1,8 @@
 package com.shepeliev.ksdp.parsers
 
+import com.shepeliev.ksdp.Bandwidth
 import com.shepeliev.ksdp.SdpParseException
 import com.shepeliev.ksdp.TimeDescription
-import com.shepeliev.ksdp.ZoneAdjustment
 import com.shepeliev.ksdp.checkIt
 
 internal fun interface Parser<T> {
@@ -10,72 +10,74 @@ internal fun interface Parser<T> {
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<String, Any>) {
+internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<Char, Any>) {
     require(this.isNotBlank()) { "Blank line: $lineNumber" }
+
+    fun checkNoDuplicate(fieldType: Char) {
+        checkIt(!parseResult.containsKey(fieldType)) { "Duplicate '$fieldType' field at line $lineNumber." }
+    }
+
+    fun parseUnicField(fieldType: Char, parser: Parser<*>) {
+        checkNoDuplicate(fieldType)
+        parseResult[fieldType] = parser.parse(this, lineNumber) as Any
+    }
 
     return when (val fieldType = this.first()) {
         'v' -> {
-            if (parseResult.containsKey("v")) throw SdpParseException("Duplicate version (v) field at line $lineNumber.")
-            parseResult["v"] = VersionParser.parse(this, lineNumber)
+            parseUnicField(fieldType, VersionParser)
         }
 
         'o' -> {
-            if (parseResult.containsKey("o")) throw SdpParseException("Duplicate origin (o) field at line $lineNumber.")
-            parseResult["o"] = OriginParser.parse(this, lineNumber)
+            parseUnicField(fieldType, OriginParser)
         }
 
         's' -> {
-            if (parseResult.containsKey("s")) throw SdpParseException("Duplicate session name (s) field at line $lineNumber.")
-            parseResult["s"] = SessionNameParser.parse(this, lineNumber)
+            parseUnicField(fieldType, SessionNameParser)
         }
 
         'i' -> {
-            if (parseResult.containsKey("i")) throw SdpParseException("Duplicate information (i) field at line $lineNumber.")
-            parseResult["i"] = InfoParser.parse(this, lineNumber)
+            parseUnicField(fieldType, InfoParser)
         }
 
         'u' -> {
-            if (parseResult.containsKey("u")) throw SdpParseException("Duplicate URI (u) field at line $lineNumber.")
-            parseResult["u"] = UriParser.parse(this, lineNumber)
+            parseUnicField(fieldType, UriParser)
         }
 
         'e' -> {
-            if (parseResult.containsKey("e")) throw SdpParseException("Duplicate email (e) field at line $lineNumber.")
-            parseResult["e"] = EmailParser.parse(this, lineNumber)
+            parseUnicField(fieldType, EmailParser)
         }
 
         'p' -> {
-            if (parseResult.containsKey("p")) throw SdpParseException("Duplicate phone (p) field at line $lineNumber.")
-            parseResult["p"] = PhoneParser.parse(this, lineNumber)
+            parseUnicField(fieldType, PhoneParser)
         }
 
         'c' -> {
-            if (parseResult.containsKey("c")) throw SdpParseException("Duplicate connection data (c) field at line $lineNumber.")
-            parseResult["c"] = ConnectionParser.parse(this, lineNumber)
+            parseUnicField(fieldType, ConnectionParser)
         }
 
         'b' -> {
-            val bandwidthList = parseResult["b"] as MutableList<com.shepeliev.ksdp.Bandwidth>
+            val bandwidthList = parseResult.getOrPut('b') { mutableListOf<Bandwidth>() } as MutableList<Bandwidth>
             bandwidthList += BandwidthParser.parse(this, lineNumber)
         }
 
         't' -> {
-            val timeList = parseResult["t"] as MutableList<TimeDescription>
+            val timeList =
+                parseResult.getOrPut('t') { mutableListOf<TimeDescription>() } as MutableList<TimeDescription>
             timeList += TimeDescriptionParser.parse(this, lineNumber)
         }
 
         'r' -> {
-            val timeList = parseResult["t"] as MutableList<TimeDescription>
-            if (timeList.isEmpty()) throw SdpParseException("Repeat field (r) must be after time field (t) at line $lineNumber.")
+            val timeList = parseResult['t'] as MutableList<TimeDescription>
+            if (timeList.isEmpty()) throw SdpParseException("'r' field must be after 't' field at line $lineNumber.")
             val lastTimeDescription = timeList.last()
             val repeats = lastTimeDescription.repeats + RepeatParser.parse(this, lineNumber)
             timeList[timeList.lastIndex] = lastTimeDescription.copy(repeats = repeats)
         }
 
         'z' -> {
-            parseResult["z"] = ZoneAdjustmentParser.parse(this, lineNumber)
+            parseResult['z'] = ZoneAdjustmentParser.parse(this, lineNumber)
         }
 
-        else -> throw SdpParseException("Unknown field type at line $lineNumber: $fieldType")
+        else -> throw SdpParseException("Unknown field type at line $lineNumber: $this")
     }
 }
