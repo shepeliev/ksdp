@@ -35,6 +35,11 @@ internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<String, A
             parseResult["u"] = Uri.parse(this, lineNumber)
         }
 
+        'e' -> {
+            if (parseResult.containsKey("e")) throw SdpParseException("Duplicate email (e) field at line $lineNumber.")
+            parseResult["e"] = Email.parse(this, lineNumber)
+        }
+
         else -> throw SdpParseException("Unknown field type at line $lineNumber: $fieldType")
     }
 }

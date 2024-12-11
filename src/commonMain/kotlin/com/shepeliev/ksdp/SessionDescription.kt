@@ -19,6 +19,7 @@ public data class SessionDescription(
     val version: Int = 0,
     val info: String? = null,
     val uri: String? = null,
+    val email: String? = null,
 ) {
 
     override fun toString(): String = buildString {
@@ -36,6 +37,10 @@ public data class SessionDescription(
             append("u=$it")
             append("\r\n")
         }
+        email?.let {
+            append("e=$it")
+            append("\r\n")
+        }
     }
 }
 
@@ -45,7 +50,7 @@ public data class SessionDescription(
 public fun String.sessionDescription(): SessionDescription {
     val parseResults = mutableMapOf<String, Any>()
 
-    trim().lines().forEachIndexed { index, line ->
+    this.trim().lines().forEachIndexed { index, line ->
         line.parseLine(index + 1, parseResults)
     }
 
@@ -61,5 +66,6 @@ public fun String.sessionDescription(): SessionDescription {
         sessionName = parseResults["s"] as String,
         info = parseResults["i"] as String?,
         uri = parseResults["u"] as String?,
+        email = parseResults["e"] as String?,
     )
 }
