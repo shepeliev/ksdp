@@ -2,6 +2,17 @@ package com.shepeliev.ksdp
 
 import com.shepeliev.ksdp.parsers.parseLine
 
+/**
+ * A SessionDescription represents the data defined by the Session Description
+ * Protocol (see IETF RFC 2327) and holds information about the originitor of a session,
+ * the media types that aclient can support and the host and port on which the client will listen
+ * for that media.
+ *
+ * The SessionDescription also holds timing information for the session (e.g. start, end,
+ * repeat, time zone) and bandwidth supported for the session.
+ *
+ * Please refer to IETF RFC 2327 for a description of SDP.
+ */
 public data class SessionDescription(
     val origin: Origin,
     val sessionName: String,
@@ -9,10 +20,11 @@ public data class SessionDescription(
     val info: String? = null,
     val uri: String? = null,
 ) {
+
     override fun toString(): String = buildString {
         append("v=$version")
         append("\r\n")
-        append(origin)
+        append("o=$origin")
         append("\r\n")
         append("s=$sessionName")
         append("\r\n")
@@ -27,6 +39,9 @@ public data class SessionDescription(
     }
 }
 
+/**
+ * Parses SDP string into [SessionDescription] object.
+ */
 public fun String.sessionDescription(): SessionDescription {
     val parseResults = mutableMapOf<String, Any>()
 

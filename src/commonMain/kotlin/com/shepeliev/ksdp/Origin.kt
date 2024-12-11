@@ -8,5 +8,5 @@ public data class Origin(
     val networkType: String = "IN",
     val addressType: String = "IP4",
 ) {
-    override fun toString(): String = "o=$username $sessionId $sessionVersion $networkType $addressType $address"
+    override fun toString(): String = "$username $sessionId $sessionVersion $networkType $addressType $address"
 }
