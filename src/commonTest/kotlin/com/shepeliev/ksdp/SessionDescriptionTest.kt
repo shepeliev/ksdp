@@ -14,6 +14,8 @@ class SessionDescriptionTest {
             uri = "http://www.example.com/seminars/sdp.pdf",
             email = "j.doe@example.com (Jane Doe)",
             phone = "+1 617 555-5555",
+            connection = Connection("224.2.17.12/127"),
+            bandwidth = listOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
         )
 
         assertEquals(expectedSdp, SDP.sessionDescription())
@@ -29,6 +31,8 @@ class SessionDescriptionTest {
             uri = "http://www.example.com/seminars/sdp.pdf",
             email = "j.doe@example.com (Jane Doe)",
             phone = "+1 617 555-5555",
+            connection = Connection("224.2.17.12/127"),
+            bandwidth = listOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
         )
 
         assertEquals(SDP, sdp.toString())
@@ -42,4 +46,7 @@ i=A Seminar on the session description protocol\r
 u=http://www.example.com/seminars/sdp.pdf\r
 e=j.doe@example.com (Jane Doe)\r
 p=+1 617 555-5555\r
+c=IN IP4 224.2.17.12/127\r
+b=AS:30\r
+b=RS:30\r
 """.replace("\\r", "\r")

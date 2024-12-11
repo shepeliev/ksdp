@@ -2,10 +2,10 @@ package com.shepeliev.ksdp.parsers
 
 import com.shepeliev.ksdp.SdpParseException
 
-internal object Version : FieldParser<Int> {
+internal object VersionParser : FieldParser<Int> {
     override fun parse(line: String, lineNumber: Int): Int {
-        val (prefix, value) = line.split('=')
-        require(prefix == "v") { "Invalid version field at line $lineNumber: $line" }
+        val (type, value) = line.split('=')
+        require(type == "v") { "Unexpected field type '$type' at line $lineNumber. Expected type: 'v'" }
 
         return try {
             value.toInt()

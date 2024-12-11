@@ -1,5 +1,6 @@
 package com.shepeliev.ksdp
 
+import com.github.h0tk3y.betterParse.parser.ParseResult
 import com.shepeliev.ksdp.parsers.parseLine
 
 /**
@@ -21,6 +22,8 @@ public data class SessionDescription(
     val uri: String? = null,
     val email: String? = null,
     val phone: String? = null,
+    val connection: Connection? = null,
+    val bandwidth: List<Bandwidth> = emptyList(),
 ) {
 
     override fun toString(): String = buildString {
@@ -46,14 +49,25 @@ public data class SessionDescription(
             append("p=$it")
             append("\r\n")
         }
+        connection?.let {
+            append("c=$it")
+            append("\r\n")
+        }
+        bandwidth.forEach {
+            append("b=$it")
+            append("\r\n")
+        }
     }
 }
 
 /**
  * Parses SDP string into [SessionDescription] object.
  */
+@Suppress("UNCHECKED_CAST")
 public fun String.sessionDescription(): SessionDescription {
-    val parseResults = mutableMapOf<String, Any>()
+    val parseResults = mutableMapOf<String, Any>(
+        "b" to mutableListOf<Bandwidth>(),
+    )
 
     this.trim().lines().forEachIndexed { index, line ->
         line.parseLine(index + 1, parseResults)
@@ -73,5 +87,7 @@ public fun String.sessionDescription(): SessionDescription {
         uri = parseResults["u"] as String?,
         email = parseResults["e"] as String?,
         phone = parseResults["p"] as String?,
+        connection = parseResults["c"] as Connection?,
+        bandwidth = parseResults["b"] as List<Bandwidth>
     )
 }

@@ -3,10 +3,10 @@ package com.shepeliev.ksdp.parsers
 import com.shepeliev.ksdp.Origin
 import com.shepeliev.ksdp.SdpParseException
 
-internal object Origin : FieldParser<Origin> {
+internal object OriginParser : FieldParser<Origin> {
     override fun parse(line: String, lineNumber: Int): Origin {
         val (type, value) = line.split("=", limit = 2)
-        require(type == "o") { "Expected 'o' field, but got '$type'." }
+        require(type == "o") { "Unexpected field type '$type' at line $lineNumber. Expected type: 'o'" }
         val values = value.split(" ")
         if (values.size != 6) throw  SdpParseException("Invalid 'o' field value at line: $lineNumber: $line")
 
