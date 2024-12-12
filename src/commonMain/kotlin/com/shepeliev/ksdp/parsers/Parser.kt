@@ -123,6 +123,15 @@ internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<Char, Any
             mediaList += MediaDescription(media = MediaParser.parse(this, lineNumber))
         }
 
-        else -> throw SdpParseException("Unknown field type at line $lineNumber: $this")
+        else -> {
+            if (parseResult.containsKey('m')) {
+                val mediaList = parseResult['m'] as MutableList<MediaDescription>
+                val lastMediaDescription = mediaList.last()
+                lastMediaDescription.attributes += AttributeParser.parse(this, lineNumber)
+            } else {
+                val attributeList = parseResult.getOrPut('a') { mutableListOf<Attribute>() } as MutableList<Attribute>
+                attributeList += AttributeParser.parse(this, lineNumber)
+            }
+        }
     }
 }

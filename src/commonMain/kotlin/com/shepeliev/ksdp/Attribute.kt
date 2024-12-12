@@ -18,9 +18,11 @@ package com.shepeliev.ksdp
 public sealed interface Attribute {
     public data class Identity(val name: String) : Attribute
     public data class NameValue(val name: String, val value: String) : Attribute
+    public data class Invalid(val line: String) : Attribute
 }
 
 internal val Attribute.line: String get() = when (this) {
     is Attribute.Identity -> "a=$name"
     is Attribute.NameValue -> "a=$name:$value"
+    is Attribute.Invalid -> line
 }

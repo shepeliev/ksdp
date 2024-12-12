@@ -27,7 +27,7 @@ public data class Media @Throws(SdpException::class) constructor(
     var type: String,
     var port: Int,
     var protocol: String,
-    var formats: List<String>,
+    var formats: MutableList<String>,
     var portCount: Int = 1,
 ) {
     init {

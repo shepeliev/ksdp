@@ -14,7 +14,7 @@ class SessionDescriptionTest {
     fun testParse() {
         val expectedSdp = SessionDescription(
             version = 0,
-            origin = Origin("jdoe", 2890844526, 2890842807, "10.47.16.5"),
+            origin = Origin("jdoe", sessionId = 2890844526, sessionVersion = 2890842807, address = "10.47.16.5"),
             sessionName = "SDP Seminar",
             info = "A Seminar on the session description protocol",
             uri = "http://www.example.com/seminars/sdp.pdf",
@@ -42,7 +42,7 @@ class SessionDescriptionTest {
             ),
             mediaDescriptions = mutableListOf(
                 MediaDescription(
-                    media = Media("audio", 53710, "RTP/SAVPF", listOf("111", "8", "0"), portCount = 2),
+                    media = Media("audio", 53710, "RTP/SAVPF", mutableListOf("111", "8", "0"), portCount = 2),
                     info = "Audio title",
                     connection = Connection("224.2.17.12/127"),
                     bandwidth = mutableListOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
@@ -59,7 +59,7 @@ class SessionDescriptionTest {
                     )
                 ),
                 MediaDescription(
-                    media = Media("video", 50042, "RTP/SAVPF", listOf("96", "39")),
+                    media = Media("video", 50042, "RTP/SAVPF", mutableListOf("96", "39")),
                     attributes = mutableListOf(
                         Attribute.NameValue("rtpmap", "96 VP8/90000"),
                         Attribute.NameValue("rtpmap", "39 H264/90000"),
@@ -76,7 +76,7 @@ class SessionDescriptionTest {
     fun testToString() {
         val sdp = SessionDescription(
             version = 0,
-            origin = Origin("jdoe", 2890844526, 2890842807, "10.47.16.5"),
+            origin = Origin("jdoe", sessionId = 2890844526, sessionVersion = 2890842807, address = "10.47.16.5"),
             sessionName = "SDP Seminar",
             info = "A Seminar on the session description protocol",
             uri = "http://www.example.com/seminars/sdp.pdf",
@@ -104,7 +104,7 @@ class SessionDescriptionTest {
             ),
             mediaDescriptions = mutableListOf(
                 MediaDescription(
-                    media = Media("audio", 53710, "RTP/SAVPF", listOf("111", "8", "0"), portCount = 2),
+                    media = Media("audio", 53710, "RTP/SAVPF", mutableListOf("111", "8", "0"), portCount = 2),
                     info = "Audio title",
                     connection = Connection("224.2.17.12/127"),
                     bandwidth = mutableListOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
@@ -121,7 +121,7 @@ class SessionDescriptionTest {
                     )
                 ),
                 MediaDescription(
-                    media = Media("video", 50042, "RTP/SAVPF", listOf("96", "39")),
+                    media = Media("video", 50042, "RTP/SAVPF", mutableListOf("96", "39")),
                     attributes = mutableListOf(
                         Attribute.NameValue("rtpmap", "96 VP8/90000"),
                         Attribute.NameValue("rtpmap", "39 H264/90000"),
@@ -134,78 +134,87 @@ class SessionDescriptionTest {
 
         assertEquals(TEST_TO_STRING_SDP, sdp.sdp())
     }
+
+    @Test
+    fun testAlac() = test("alac")
+
+    @Test
+    fun testBfcp() = test("bfcp")
+
+    @Test
+    fun testDanteAes67() = test("dante-aes67")
+
+    @Test
+    fun testExtmapEncrypt() = test("extmap-encrypt")
+
+    @Test
+    fun testHacky() = test("hacky")
+
+    @Test
+    fun testIcelite() = test("icelite")
+
+    @Test
+    fun testInvalid() = test("invalid")
+
+    @Test
+    fun testJsep() = test("jsep")
+
+    @Test
+    fun testJssip() = test("jssip")
+
+    @Test
+    fun testMediaclkAvbtp() = test("mediaclk-avbtp")
+
+    @Test
+    fun testMediaclkPtpV2() = test("mediaclk-ptp-v2")
+
+    @Test
+    fun testMediaclkPtpV2WRate() = test("mediaclk-ptp-v2-w-rate")
+
+    @Test
+    fun testMediaclkRtp() = test("mediaclk-rtp")
+
+    @Test
+    fun testNormal() = test("normal")
+
+    @Test
+    fun testOnvif() = test("onvif")
+
+    @Test
+    fun testRtcpFb() = test("rtcp-fb")
+
+    @Test
+    fun testSctpDtls26() = test("sctp-dtls-26")
+
+    @Test
+    fun testSimulcast() = test("simulcast")
+
+    @Test
+    fun testSsrc() = test("ssrc")
+
+    @Test
+    fun testSt20226() = test("st2022-6")
+
+    @Test
+    fun testSt211020() = test("st2110-20")
+
+    @Test
+    fun testTcpActive() = test("tcp-active")
+
+    @Test
+    fun testTcpPassive() = test("tcp-passive")
+
+    @Test
+    fun testTsRefclkMedia() = test("ts-refclk-media")
+
+    @Test
+    fun testTsRefclkSess() = test("ts-refclk-sess")
+
+    private fun test(sdpName: String) {
+        val sdp = readSdpFile(sdpName)
+        val sessionDescription = sdp.parseSdp()
+        val composedSdp = sessionDescription.sdp(lineSeparator = "\n")
+
+        assertEquals(sessionDescription, composedSdp.parseSdp())
+    }
 }
-
-private val TEST_PARSE_SDP = """v=0\r
-o=jdoe 2890844526 2890842807 IN IP4 10.47.16.5\r
-s=SDP Seminar\r
-i=A Seminar on the session description protocol\r
-u=http://www.example.com/seminars/sdp.pdf\r
-e=j.doe@example.com (Jane Doe)\r
-p=+1 617 555-5555\r
-c=IN IP4 224.2.17.12/127\r
-b=AS:30\r
-b=RS:30\r
-t=3034423619 3042462419\r
-r=7d 1h 0 25h\r
-r=1d 30m 10s 25h\r
-z=3034423619 -1h 3042462419 0\r
-k=prompt\r
-a=group:BUNDLE 0 1\r
-a=extmap-allow-mixed\r
-m=audio 53710/2 RTP/SAVPF 111 8 0\r
-i=Audio title\r
-c=IN IP4 224.2.17.12/127\r
-b=AS:30\r
-b=RS:30\r
-k=clear:password\r
-a=rtpmap:111 opus/48000/2\r
-a=rtpmap:8 PCMA/8000\r
-a=fmtp:111 minptime=10;useinbandfec=1\r
-a=rtcp:53711\r
-a=rtcp-fb:111 transport-cc\r
-a=setup:actpass\r
-a=ptime:20\r
-a=sendrecv\r
-m=video 50042 RTP/SAVPF 96 39\r
-a=rtpmap:96 VP8/90000\r
-a=rtpmap:39 H264/90000\r
-a=inactive\r
-""".replace("\\r", "\r")
-
-private val TEST_TO_STRING_SDP = """v=0\r
-o=jdoe 2890844526 2890842807 IN IP4 10.47.16.5\r
-s=SDP Seminar\r
-i=A Seminar on the session description protocol\r
-u=http://www.example.com/seminars/sdp.pdf\r
-e=j.doe@example.com (Jane Doe)\r
-p=+1 617 555-5555\r
-c=IN IP4 224.2.17.12/127\r
-b=AS:30\r
-b=RS:30\r
-t=3034423619 3042462419\r
-r=604800 3600 0 90000\r
-r=86400 1800 10 90000\r
-z=3034423619 -3600 3042462419 0\r
-k=clear:password\r
-a=group:BUNDLE 0 1\r
-a=extmap-allow-mixed\r
-m=audio 53710/2 RTP/SAVPF 111 8 0\r
-i=Audio title\r
-c=IN IP4 224.2.17.12/127\r
-b=AS:30\r
-b=RS:30\r
-k=clear:password\r
-a=rtpmap:111 opus/48000/2\r
-a=rtpmap:8 PCMA/8000\r
-a=fmtp:111 minptime=10;useinbandfec=1\r
-a=rtcp:53711\r
-a=rtcp-fb:111 transport-cc\r
-a=setup:actpass\r
-a=ptime:20\r
-a=sendrecv\r
-m=video 50042 RTP/SAVPF 96 39\r
-a=rtpmap:96 VP8/90000\r
-a=rtpmap:39 H264/90000\r
-a=inactive\r
-""".replace("\\r", "\r")

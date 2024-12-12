@@ -45,7 +45,7 @@ public val SessionDescription.lines: List<String>
         connection?.let { add(it.line) }
         bandwidth.forEach { add(it.line) }
         time.forEach { addAll(it.lines) }
-        add("z=${zoneAdjustments.joinToString(" ")}")
+        zoneAdjustments.takeIf { it.isNotEmpty() }?.let { add("z=${it.joinToString(" ")}") }
         key?.let { add(it.line) }
         attributes.forEach { add(it.line) }
         mediaDescriptions.forEach { addAll(it.lines) }
@@ -74,7 +74,6 @@ public fun String.parseSdp(): SessionDescription {
         parseResults['v'] == null -> throw SdpParseException("SDP malformed: 'v' field is required.")
         parseResults['o'] == null -> throw SdpParseException("SDP malformed: 'o' field is required.")
         parseResults['s'] == null -> throw SdpParseException("SDP malformed: 's' field is required.")
-        parseResults['t'] == null -> throw SdpParseException("SDP malformed: at least one 't' field is required.")
     }
 
     return SessionDescription(
@@ -85,7 +84,7 @@ public fun String.parseSdp(): SessionDescription {
         uri = parseResults['u'] as String?,
         email = parseResults['e'] as String?,
         phone = parseResults['p'] as String?,
-        time = parseResults['t'] as MutableList<TimeDescription>,
+        time = parseResults['t'] as MutableList<TimeDescription>? ?: mutableListOf(TimeDescription(Time())),
         connection = parseResults['c'] as Connection?,
         bandwidth = parseResults['b'] as MutableList<Bandwidth>? ?: mutableListOf(),
         zoneAdjustments = parseResults['z'] as MutableList<ZoneAdjustment>? ?: mutableListOf(),

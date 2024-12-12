@@ -1,5 +1,8 @@
 package com.shepeliev.ksdp
 
+import com.shepeliev.ksdp.utils.toNtp
+import kotlinx.datetime.Clock
+
 /**
  * An Origin represents the o= fields contained within a SessionDescription.
  *
@@ -25,9 +28,9 @@ package com.shepeliev.ksdp
  */
 public data class Origin(
     var username: String,
-    var sessionId: Long,
-    var sessionVersion: Long,
     var address: String,
+    var sessionId: Long = Clock.System.now().toNtp(),
+    var sessionVersion: Long = Clock.System.now().toNtp(),
     var networkType: String = "IN",
     var addressType: String = "IP4",
 )

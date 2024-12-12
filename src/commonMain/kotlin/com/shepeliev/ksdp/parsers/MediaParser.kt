@@ -15,7 +15,7 @@ internal object MediaParser : Parser<Media> {
         val protocol = values[2]
         val formats = values.drop(3)
 
-        return Media(media, port.first, protocol, formats, port.second)
+        return Media(media, port.first, protocol, formats.toMutableList(), port.second)
     }
 
     private fun parsePort(lineText: String, lineNumber: Int, portText: String): Pair<Int, Int> {
