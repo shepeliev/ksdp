@@ -20,9 +20,9 @@ package com.shepeliev.ksdp
  * Please refer to IETF RFC 2327 for a description of SDP.
  */
 public data class Connection(
-    val address: String,
-    val addressType: String = "IP4",
-    val networkType: String = "IN",
-) {
-    override fun toString(): String = "$networkType $addressType $address"
-}
+    var address: String,
+    var addressType: String = "IP4",
+    var networkType: String = "IN",
+)
+
+internal val Connection.line: String get() = "c=$networkType $addressType $address"

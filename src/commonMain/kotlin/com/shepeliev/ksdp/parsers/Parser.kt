@@ -88,8 +88,7 @@ internal fun String.parseLine(lineNumber: Int, parseResult: MutableMap<Char, Any
             val timeList = parseResult['t'] as MutableList<TimeDescription>
             if (timeList.isEmpty()) throw SdpParseException("'r' field must be after 't' field at line $lineNumber.")
             val lastTimeDescription = timeList.last()
-            val repeats = lastTimeDescription.repeats + RepeatParser.parse(this, lineNumber)
-            timeList[timeList.lastIndex] = lastTimeDescription.copy(repeats = repeats)
+            lastTimeDescription.repeats += RepeatParser.parse(this, lineNumber)
         }
 
         'z' -> {

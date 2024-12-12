@@ -14,84 +14,56 @@ import com.shepeliev.ksdp.parsers.parseLine
  * Please refer to IETF RFC 2327 for a description of SDP.
  */
 public data class SessionDescription(
-    val origin: Origin,
-    val sessionName: String,
-    val time: List<TimeDescription>,
-    val version: Int = 0,
-    val info: String? = null,
-    val uri: String? = null,
-    val email: String? = null,
-    val phone: String? = null,
-    val connection: Connection? = null,
-    val bandwidth: List<Bandwidth> = emptyList(),
-    val zoneAdjustments: List<ZoneAdjustment>? = null,
-    val key: Key? = null,
-    val attributes: List<Attribute>? = null,
-    val mediaDescriptions: List<MediaDescription>? = null,
-) {
+    var origin: Origin,
+    var sessionName: String,
+    var version: Int = 0,
+    var time: MutableList<TimeDescription> = mutableListOf(TimeDescription(Time())),
+    var info: String? = null,
+    var uri: String? = null,
+    var email: String? = null,
+    var phone: String? = null,
+    var connection: Connection? = null,
+    var bandwidth: MutableList<Bandwidth> = mutableListOf(),
+    val zoneAdjustments: MutableList<ZoneAdjustment> = mutableListOf(),
+    var key: Key? = null,
+    var attributes: MutableList<Attribute> = mutableListOf(),
+    var mediaDescriptions: MutableList<MediaDescription> = mutableListOf(),
+)
 
-    override fun toString(): String = buildString {
-        append("v=$version")
-        append("\r\n")
-        append("o=$origin")
-        append("\r\n")
-        append("s=$sessionName")
-        append("\r\n")
-        info?.let {
-            append("i=$it")
-            append("\r\n")
-        }
-        uri?.let {
-            append("u=$it")
-            append("\r\n")
-        }
-        email?.let {
-            append("e=$it")
-            append("\r\n")
-        }
-        phone?.let {
-            append("p=$it")
-            append("\r\n")
-        }
-        connection?.let {
-            append("c=$it")
-            append("\r\n")
-        }
-        bandwidth.forEach {
-            append("b=$it")
-            append("\r\n")
-        }
-        time.forEach {
-            append("t=$it")
-            append("\r\n")
-            it.repeats.forEach { repeat ->
-                append("r=$repeat")
-                append("\r\n")
-            }
-        }
-        zoneAdjustments?.let {
-            append("z=${it.joinToString(" ")}")
-            append("\r\n")
-        }
-        key?.let {
-            append("k=$it")
-            append("\r\n")
-        }
-        attributes?.forEach {
-            append("a=$it")
-            append("\r\n")
-        }
-        mediaDescriptions?.let { description ->
-            description.forEach { append(it.toString()) }
-        }
+/**
+ * Returns a list of encoded lines of the SDP.
+ */
+public val SessionDescription.lines: List<String>
+    get() = buildList {
+        add("v=$version")
+        add(origin.line)
+        add("s=$sessionName")
+        info?.let { add("i=$it") }
+        uri?.let { add("u=$it") }
+        email?.let { add("e=$it") }
+        phone?.let { add("p=$it") }
+        connection?.let { add(it.line) }
+        bandwidth.forEach { add(it.line) }
+        time.forEach { addAll(it.lines) }
+        add("z=${zoneAdjustments.joinToString(" ")}")
+        key?.let { add(it.line) }
+        attributes.forEach { add(it.line) }
+        mediaDescriptions.forEach { addAll(it.lines) }
     }
+
+/**
+ * Returns a string representation of the SDP.
+ */
+public fun SessionDescription.sdp(lineSeparator: String = "\r\n"): String {
+    return lines.joinToString(lineSeparator, postfix = lineSeparator)
 }
 
 /**
  * Parses SDP string into [SessionDescription] object.
  */
 @Suppress("UNCHECKED_CAST")
-public fun String.sessionDescription(): SessionDescription {
+@Throws(SdpParseException::class)
+public fun String.parseSdp(): SessionDescription {
     val parseResults = mutableMapOf<Char, Any>()
 
     this.trim().lines().forEachIndexed { index, line ->
@@ -113,12 +85,12 @@ public fun String.sessionDescription(): SessionDescription {
         uri = parseResults['u'] as String?,
         email = parseResults['e'] as String?,
         phone = parseResults['p'] as String?,
-        time = parseResults['t'] as List<TimeDescription>,
+        time = parseResults['t'] as MutableList<TimeDescription>,
         connection = parseResults['c'] as Connection?,
-        bandwidth = parseResults['b'] as List<Bandwidth>,
-        zoneAdjustments = parseResults['z'] as List<ZoneAdjustment>?,
+        bandwidth = parseResults['b'] as MutableList<Bandwidth>? ?: mutableListOf(),
+        zoneAdjustments = parseResults['z'] as MutableList<ZoneAdjustment>? ?: mutableListOf(),
         key = parseResults['k'] as Key?,
-        attributes = parseResults['a'] as List<Attribute>?,
-        mediaDescriptions = parseResults['m'] as List<MediaDescription>?,
+        attributes = parseResults['a'] as MutableList<Attribute>? ?: mutableListOf(),
+        mediaDescriptions = parseResults['m'] as MutableList<MediaDescription>? ?: mutableListOf(),
     )
 }

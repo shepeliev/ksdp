@@ -16,8 +16,12 @@ package com.shepeliev.ksdp
  * Please refer to IETF RFC 2327 for a description of SDP.
  */
 public data class TimeDescription @Throws(SdpException::class) constructor(
-    val time: Time,
-    val repeats: List<Repeat> = emptyList()
-) {
-    override fun toString(): String = "$time"
-}
+    var time: Time,
+    var repeats: MutableList<Repeat> = mutableListOf()
+)
+
+internal val TimeDescription.lines: List<String>
+    get() = buildList {
+        add(time.line)
+        repeats.forEach { add(it.line) }
+    }

@@ -11,14 +11,15 @@ public data class Repeat @Throws(SdpException::class) constructor(
         checkIt(interval > Duration.ZERO) { "Interval must be greater than 0" }
         checkIt(activeDuration > Duration.ZERO) { "Active duration must be greater than 0" }
     }
+}
 
-    override fun toString(): String = buildString {
-        append(interval.inWholeSeconds)
+internal val Repeat.line: String get() = buildString {
+    append("r=")
+    append(interval.inWholeSeconds)
+    append(' ')
+    append(activeDuration.inWholeSeconds)
+    offsets.forEach {
         append(' ')
-        append(activeDuration.inWholeSeconds)
-        offsets.forEach {
-            append(' ')
-            append(it.inWholeSeconds)
-        }
+        append(it.inWholeSeconds)
     }
 }

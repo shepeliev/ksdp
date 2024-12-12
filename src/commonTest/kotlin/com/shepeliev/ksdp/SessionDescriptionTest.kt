@@ -21,26 +21,26 @@ class SessionDescriptionTest {
             email = "j.doe@example.com (Jane Doe)",
             phone = "+1 617 555-5555",
             connection = Connection("224.2.17.12/127"),
-            bandwidth = listOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
-            time = listOf(
+            bandwidth = mutableListOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
+            time = mutableListOf(
                 TimeDescription(
                     time = Time(Instant.fromEpochSeconds(825434819), Instant.fromEpochSeconds(833473619)),
-                    repeats = listOf(
+                    repeats = mutableListOf(
                         Repeat(interval = 7.days, activeDuration = 1.hours, offsets = listOf(ZERO, 25.hours)),
                         Repeat(interval = 1.days, activeDuration = 30.minutes, offsets = listOf(10.seconds, 25.hours)),
                     )
                 )
             ),
-            zoneAdjustments = listOf(
+            zoneAdjustments = mutableListOf(
                 ZoneAdjustment(Instant.fromEpochSeconds(825434819), (-1).hours),
                 ZoneAdjustment(Instant.fromEpochSeconds(833473619), ZERO),
             ),
             key = Key.Prompt,
-            attributes = listOf(
+            attributes = mutableListOf(
                 Attribute.NameValue("group", "BUNDLE 0 1"),
                 Attribute.Identity("extmap-allow-mixed"),
             ),
-            mediaDescriptions = listOf(
+            mediaDescriptions = mutableListOf(
                 MediaDescription(
                     media = Media("audio", 53710, "RTP/SAVPF", listOf("111", "8", "0"), portCount = 2),
                     info = "Audio title",
@@ -69,7 +69,7 @@ class SessionDescriptionTest {
             )
         )
 
-        assertEquals(expectedSdp, TEST_PARSE_SDP.sessionDescription())
+        assertEquals(expectedSdp, TEST_PARSE_SDP.parseSdp())
     }
 
     @Test
@@ -83,26 +83,26 @@ class SessionDescriptionTest {
             email = "j.doe@example.com (Jane Doe)",
             phone = "+1 617 555-5555",
             connection = Connection("224.2.17.12/127"),
-            bandwidth = listOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
-            time = listOf(
+            bandwidth = mutableListOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
+            time = mutableListOf(
                 TimeDescription(
                     time = Time(Instant.fromEpochSeconds(825434819), Instant.fromEpochSeconds(833473619)),
-                    repeats = listOf(
+                    repeats = mutableListOf(
                         Repeat(interval = 7.days, activeDuration = 1.hours, offsets = listOf(ZERO, 25.hours)),
                         Repeat(interval = 1.days, activeDuration = 30.minutes, offsets = listOf(10.seconds, 25.hours)),
                     )
                 )
             ),
-            zoneAdjustments = listOf(
+            zoneAdjustments = mutableListOf(
                 ZoneAdjustment(Instant.fromEpochSeconds(825434819), (-1).hours),
                 ZoneAdjustment(Instant.fromEpochSeconds(833473619), ZERO),
             ),
             key = Key.Clear("password"),
-            attributes = listOf(
+            attributes = mutableListOf(
                 Attribute.NameValue("group", "BUNDLE 0 1"),
                 Attribute.Identity("extmap-allow-mixed"),
             ),
-            mediaDescriptions = listOf(
+            mediaDescriptions = mutableListOf(
                 MediaDescription(
                     media = Media("audio", 53710, "RTP/SAVPF", listOf("111", "8", "0"), portCount = 2),
                     info = "Audio title",
@@ -132,7 +132,7 @@ class SessionDescriptionTest {
 
         )
 
-        assertEquals(TEST_TO_STRING_SDP, sdp.toString())
+        assertEquals(TEST_TO_STRING_SDP, sdp.sdp())
     }
 }
 

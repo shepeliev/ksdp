@@ -21,16 +21,17 @@ public data class MediaDescription(
     var media: Media,
     var info: String? = null,
     var connection: Connection? = null,
-    val bandwidth: MutableList<Bandwidth> = mutableListOf(),
+    var bandwidth: MutableList<Bandwidth> = mutableListOf(),
     var key: Key? = null,
-    val attributes: MutableList<Attribute> = mutableListOf()
-) {
-    override fun toString(): String = buildString {
-        append("m=${media}\r\n")
-        info?.let { append("i=$it\r\n") }
-        connection?.let { append("c=$it\r\n") }
-        bandwidth.forEach { append("b=$it\r\n") }
-        key?.let { append("k=$it\r\n") }
-        attributes.forEach { append("a=$it\r\n") }
+    var attributes: MutableList<Attribute> = mutableListOf()
+)
+
+internal val MediaDescription.lines: List<String>
+    get() = buildList {
+        add("m=${media}")
+        info?.let { add("i=$it") }
+        connection?.let { add(it.line) }
+        bandwidth.forEach { add(it.line) }
+        key?.let { add(it.line) }
+        attributes.forEach { add(it.line) }
     }
-}

@@ -27,6 +27,6 @@ package com.shepeliev.ksdp
  *
  * Please refer to IETF RFC 2327 for a description of SDP.
  */
-public data class Bandwidth(val type: String, val bandwidth: Int) {
-    override fun toString(): String = "$type:$bandwidth"
-}
+public data class Bandwidth(var type: String, var bandwidth: Int)
+
+internal val Bandwidth.line: String get() = "b=$type:$bandwidth"

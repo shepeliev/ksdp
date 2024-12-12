@@ -24,12 +24,13 @@ package com.shepeliev.ksdp
  * Please refer to IETF RFC 2327 for a description of SDP.
  */
 public data class Origin(
-    val username: String,
-    val sessionId: Long,
-    val sessionVersion: Long,
-    val address: String,
-    val networkType: String = "IN",
-    val addressType: String = "IP4",
-) {
-    override fun toString(): String = "$username $sessionId $sessionVersion $networkType $addressType $address"
-}
+    var username: String,
+    var sessionId: Long,
+    var sessionVersion: Long,
+    var address: String,
+    var networkType: String = "IN",
+    var addressType: String = "IP4",
+)
+
+internal val Origin.line: String
+    get() = "o=$username $sessionId $sessionVersion $networkType $addressType $address"

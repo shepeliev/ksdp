@@ -16,11 +16,11 @@ package com.shepeliev.ksdp
  * If a value is present, it must be preceeded by the : character.
  */
 public sealed interface Attribute {
-    public data class Identity(val name: String) : Attribute {
-        override fun toString(): String = name
-    }
+    public data class Identity(val name: String) : Attribute
+    public data class NameValue(val name: String, val value: String) : Attribute
+}
 
-    public data class NameValue(val name: String, val value: String) : Attribute {
-        override fun toString(): String = "$name:$value"
-    }
+internal val Attribute.line: String get() = when (this) {
+    is Attribute.Identity -> "a=$name"
+    is Attribute.NameValue -> "a=$name:$value"
 }
