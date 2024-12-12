@@ -1,6 +1,8 @@
 [versions]
 kotlin = "2.1.0"
+kotlin-datetime = "0.6.1"
 kermit = "2.0.5"
+better-parse = "0.4.4"
 
 # Plugins
 agp = "8.2.2"
@@ -12,6 +14,9 @@ targetSdk = "35"
 
 [libraries]
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+betterParse = { module = "com.github.h0tk3y.betterParse:better-parse", version.ref = "better-parse" }
+kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-datetime" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 [plugins]
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
