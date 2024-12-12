@@ -1,7 +1,17 @@
 package com.shepeliev.ksdp
 
+import com.shepeliev.ksdp.utils.toNtp
+import kotlinx.datetime.Instant
+
 /**
- * A TimeDescription represents the fields present within a SDP time description.
+ * A RepeatTime represents a t= field contained within a TimeDescription.
+ *
+ * A RepeatTime specifies the start and stop times for a SessionDescription.
+ *
+ * Note: this class uses [kotlinx.datetime.Instant] objects. SDP messages encode time in NTP
+ * format.
+ *
+ * To convert between them use Long.ntpTimeToInstant() and Instant.toNtpTime().
  *
  * Quoting from RFC 2327:
  *
@@ -15,9 +25,6 @@ package com.shepeliev.ksdp
  *
  * Please refer to IETF RFC 2327 for a description of SDP.
  */
-public data class TimeDescription @Throws(SdpException::class) constructor(
-    val time: Time,
-    val repeats: List<Repeat> = emptyList()
-) {
-    override fun toString(): String = "$time"
+public data class Time(val start: Instant, val end: Instant) {
+    override fun toString(): String = "${start.toNtp()} ${end.toNtp()}"
 }

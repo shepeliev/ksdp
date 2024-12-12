@@ -27,6 +27,7 @@ public data class SessionDescription(
     val zoneAdjustments: List<ZoneAdjustment>? = null,
     val key: Key? = null,
     val attributes: List<Attribute>? = null,
+    val mediaDescriptions: List<MediaDescription>? = null,
 ) {
 
     override fun toString(): String = buildString {
@@ -80,6 +81,9 @@ public data class SessionDescription(
             append("a=$it")
             append("\r\n")
         }
+        mediaDescriptions?.let { description ->
+            description.forEach { append(it.toString()) }
+        }
     }
 }
 
@@ -115,5 +119,6 @@ public fun String.sessionDescription(): SessionDescription {
         zoneAdjustments = parseResults['z'] as List<ZoneAdjustment>?,
         key = parseResults['k'] as Key?,
         attributes = parseResults['a'] as List<Attribute>?,
+        mediaDescriptions = parseResults['m'] as List<MediaDescription>?,
     )
 }

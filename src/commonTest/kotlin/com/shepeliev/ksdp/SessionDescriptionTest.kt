@@ -37,9 +37,36 @@ class SessionDescriptionTest {
             ),
             key = Key.Prompt,
             attributes = listOf(
-                Attribute.NameValue("group","BUNDLE 0 1"),
+                Attribute.NameValue("group", "BUNDLE 0 1"),
                 Attribute.Identity("extmap-allow-mixed"),
             ),
+            mediaDescriptions = listOf(
+                MediaDescription(
+                    media = Media("audio", 53710, "RTP/SAVPF", listOf("111", "8", "0"), portCount = 2),
+                    info = "Audio title",
+                    connection = Connection("224.2.17.12/127"),
+                    bandwidth = mutableListOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
+                    key = Key.Clear("password"),
+                    attributes = mutableListOf(
+                        Attribute.NameValue("rtpmap", "111 opus/48000/2"),
+                        Attribute.NameValue("rtpmap", "8 PCMA/8000"),
+                        Attribute.NameValue("fmtp", "111 minptime=10;useinbandfec=1"),
+                        Attribute.NameValue("rtcp", "53711"),
+                        Attribute.NameValue("rtcp-fb", "111 transport-cc"),
+                        Attribute.NameValue("setup", "actpass"),
+                        Attribute.NameValue("ptime", "20"),
+                        Attribute.Identity("sendrecv"),
+                    )
+                ),
+                MediaDescription(
+                    media = Media("video", 50042, "RTP/SAVPF", listOf("96", "39")),
+                    attributes = mutableListOf(
+                        Attribute.NameValue("rtpmap", "96 VP8/90000"),
+                        Attribute.NameValue("rtpmap", "39 H264/90000"),
+                        Attribute.Identity("inactive"),
+                    )
+                )
+            )
         )
 
         assertEquals(expectedSdp, TEST_PARSE_SDP.sessionDescription())
@@ -72,9 +99,37 @@ class SessionDescriptionTest {
             ),
             key = Key.Clear("password"),
             attributes = listOf(
-                Attribute.NameValue("group","BUNDLE 0 1"),
+                Attribute.NameValue("group", "BUNDLE 0 1"),
                 Attribute.Identity("extmap-allow-mixed"),
             ),
+            mediaDescriptions = listOf(
+                MediaDescription(
+                    media = Media("audio", 53710, "RTP/SAVPF", listOf("111", "8", "0"), portCount = 2),
+                    info = "Audio title",
+                    connection = Connection("224.2.17.12/127"),
+                    bandwidth = mutableListOf(Bandwidth("AS", 30), Bandwidth("RS", 30)),
+                    key = Key.Clear("password"),
+                    attributes = mutableListOf(
+                        Attribute.NameValue("rtpmap", "111 opus/48000/2"),
+                        Attribute.NameValue("rtpmap", "8 PCMA/8000"),
+                        Attribute.NameValue("fmtp", "111 minptime=10;useinbandfec=1"),
+                        Attribute.NameValue("rtcp", "53711"),
+                        Attribute.NameValue("rtcp-fb", "111 transport-cc"),
+                        Attribute.NameValue("setup", "actpass"),
+                        Attribute.NameValue("ptime", "20"),
+                        Attribute.Identity("sendrecv"),
+                    )
+                ),
+                MediaDescription(
+                    media = Media("video", 50042, "RTP/SAVPF", listOf("96", "39")),
+                    attributes = mutableListOf(
+                        Attribute.NameValue("rtpmap", "96 VP8/90000"),
+                        Attribute.NameValue("rtpmap", "39 H264/90000"),
+                        Attribute.Identity("inactive"),
+                    )
+                )
+            )
+
         )
 
         assertEquals(TEST_TO_STRING_SDP, sdp.toString())
@@ -98,6 +153,24 @@ z=3034423619 -1h 3042462419 0\r
 k=prompt\r
 a=group:BUNDLE 0 1\r
 a=extmap-allow-mixed\r
+m=audio 53710/2 RTP/SAVPF 111 8 0\r
+i=Audio title\r
+c=IN IP4 224.2.17.12/127\r
+b=AS:30\r
+b=RS:30\r
+k=clear:password\r
+a=rtpmap:111 opus/48000/2\r
+a=rtpmap:8 PCMA/8000\r
+a=fmtp:111 minptime=10;useinbandfec=1\r
+a=rtcp:53711\r
+a=rtcp-fb:111 transport-cc\r
+a=setup:actpass\r
+a=ptime:20\r
+a=sendrecv\r
+m=video 50042 RTP/SAVPF 96 39\r
+a=rtpmap:96 VP8/90000\r
+a=rtpmap:39 H264/90000\r
+a=inactive\r
 """.replace("\\r", "\r")
 
 private val TEST_TO_STRING_SDP = """v=0\r
@@ -117,4 +190,22 @@ z=3034423619 -3600 3042462419 0\r
 k=clear:password\r
 a=group:BUNDLE 0 1\r
 a=extmap-allow-mixed\r
+m=audio 53710/2 RTP/SAVPF 111 8 0\r
+i=Audio title\r
+c=IN IP4 224.2.17.12/127\r
+b=AS:30\r
+b=RS:30\r
+k=clear:password\r
+a=rtpmap:111 opus/48000/2\r
+a=rtpmap:8 PCMA/8000\r
+a=fmtp:111 minptime=10;useinbandfec=1\r
+a=rtcp:53711\r
+a=rtcp-fb:111 transport-cc\r
+a=setup:actpass\r
+a=ptime:20\r
+a=sendrecv\r
+m=video 50042 RTP/SAVPF 96 39\r
+a=rtpmap:96 VP8/90000\r
+a=rtpmap:39 H264/90000\r
+a=inactive\r
 """.replace("\\r", "\r")
