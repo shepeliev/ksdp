@@ -5,10 +5,10 @@ import com.shepeliev.ksdp.checkIt
 
 internal object RepeatParser : Parser<Repeat> {
     override fun parse(text: String, lineNumber: Int): Repeat {
-        val (fieldType, value) = text.split("=")
+        val (fieldType, fieldValue) = text.split("=")
         require(fieldType == "r") { "\"Unexpected field type '$fieldType' at line $lineNumber. Expected type: 'r'\"" }
 
-        val values = value.split(" ")
+        val values = fieldValue.split(" ")
         checkIt(values.size > 2) { "Invalid repeat field at line $lineNumber: $text" }
 
         val interval = TypedTimeParser.parse(values[0], lineNumber)

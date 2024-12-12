@@ -7,7 +7,7 @@ internal class StringParser(private val fieldType: Char) : Parser<String> {
         require(text.isNotBlank()) { "Blank line: $lineNumber" }
         require(text.first() == fieldType) { "Unexpected field type \"${text.first()}\" line $lineNumber: $text. Expected type: $fieldType" }
         val (_, value) = text.split('=')
-        if (value.isEmpty()) throw SdpParseException("Empty field \"${fieldType}\" value at line $lineNumber.")
+        if (value.isEmpty()) throw SdpParseException("Empty field \"${fieldType}\" value at line $lineNumber: $text")
         return value
     }
 }

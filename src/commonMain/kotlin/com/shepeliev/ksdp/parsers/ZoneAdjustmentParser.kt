@@ -7,12 +7,11 @@ import com.shepeliev.ksdp.utils.ntpTimeToInstant
 
 internal object ZoneAdjustmentParser : Parser<List<ZoneAdjustment>> {
     override fun parse(text: String, lineNumber: Int): List<ZoneAdjustment> {
-        val (fieldType, value) = text.split("=")
+        val (fieldType, fieldValue) = text.split("=")
         require(fieldType == "z") { "\"Unexpected field type '$fieldType' at line $lineNumber. Expected type: 'z'\"" }
 
-        val values = value.split(" ")
+        val values = fieldValue.split(" ")
         checkIt(values.size % 2 == 0) { "Invalid zone adjustment field at line $lineNumber: $text" }
-
 
         return values.windowed(size = 2, step = 2) { (t, o) ->
             val time = try {

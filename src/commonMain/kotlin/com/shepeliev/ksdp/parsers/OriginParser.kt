@@ -5,9 +5,9 @@ import com.shepeliev.ksdp.SdpParseException
 
 internal object OriginParser : Parser<Origin> {
     override fun parse(text: String, lineNumber: Int): Origin {
-        val (type, value) = text.split("=", limit = 2)
-        require(type == "o") { "Unexpected field type '$type' at line $lineNumber. Expected type: 'o'" }
-        val values = value.split(" ")
+        val (fieldType, fieldValue) = text.split("=", limit = 2)
+        require(fieldType == "o") { "Unexpected field type '$fieldType' at line $lineNumber. Expected type: 'o'" }
+        val values = fieldValue.split(" ")
         if (values.size != 6) throw  SdpParseException("Invalid 'o' field value at line: $lineNumber: $text")
 
         val sessionId = try {

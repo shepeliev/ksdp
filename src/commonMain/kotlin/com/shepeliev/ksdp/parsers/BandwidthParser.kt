@@ -5,14 +5,14 @@ import com.shepeliev.ksdp.SdpParseException
 
 internal object BandwidthParser : Parser<Bandwidth> {
     override fun parse(text: String, lineNumber: Int): Bandwidth {
-        val (fieldType, value) = text.split("=")
+        val (fieldType, fieldValue) = text.split("=")
         require(fieldType == "b") { "Unexpected field type '$fieldType' at line $lineNumber. Expected type: 'b'" }
 
-        val (bandwidthType, bandwidth) = value.split(":")
+        val (bandwidthType, bandwidth) = fieldValue.split(":")
         val bandwidthValue = try {
             bandwidth.toInt()
         } catch (e: NumberFormatException) {
-            throw SdpParseException("Invalid bandwidth value '$bandwidth' at line $lineNumber")
+            throw SdpParseException("Invalid bandwidth value '$bandwidth' at line $lineNumber: $text")
         }
 
         return Bandwidth(bandwidthType, bandwidthValue)

@@ -4,13 +4,13 @@ import com.shepeliev.ksdp.SdpParseException
 
 internal object VersionParser : Parser<Int> {
     override fun parse(text: String, lineNumber: Int): Int {
-        val (type, value) = text.split('=')
-        require(type == "v") { "Unexpected field type '$type' at line $lineNumber. Expected type: 'v'" }
+        val (fieldType, fieldValue) = text.split('=')
+        require(fieldType == "v") { "Unexpected field type '$fieldType' at line $lineNumber. Expected type: 'v'" }
 
         return try {
-            value.toInt()
+            fieldValue.toInt()
         } catch (e: NumberFormatException) {
-            throw SdpParseException("Invalid version number at line $lineNumber: $value")
+            throw SdpParseException("Invalid version number at line $lineNumber: $text")
         }
     }
 }
