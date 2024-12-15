@@ -136,6 +136,40 @@ class SessionDescriptionTest {
     }
 
     @Test
+    fun testGetAttribute() {
+        val sdp = readSdpFile("hacky")
+        val sessionDescription = sdp.parseSdp()
+
+        assertEquals(
+            listOf(Attribute.NameValue("group", "BUNDLE audio video")),
+            sessionDescription["group"]
+        )
+
+        assertEquals(
+            8,
+            sessionDescription.mediaDescription("audio")?.getAttributes("candidate")?.size
+        )
+    }
+
+    @Test
+    fun testAddAttribute() {
+        val sdp = readSdpFile("hacky")
+        val sessionDescription = sdp.parseSdp()
+
+        sessionDescription.addAttribute(Attribute.NameValue("customattr", "customvalue"))
+        sessionDescription.mediaDescription("audio")?.addAttribute(Attribute.NameValue("customattr", "customvalue"))
+
+        assertEquals(
+            listOf(Attribute.NameValue("customattr", "customvalue")),
+            sessionDescription["customattr"]
+        )
+        assertEquals(
+            listOf(Attribute.NameValue("customattr", "customvalue")),
+            sessionDescription.mediaDescription("audio")?.getAttributes("customattr")
+        )
+    }
+
+    @Test
     fun testAlac() = test("alac")
 
     @Test

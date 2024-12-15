@@ -23,8 +23,8 @@ public data class MediaDescription(
     var connection: Connection? = null,
     var bandwidth: MutableList<Bandwidth> = mutableListOf(),
     var key: Key? = null,
-    var attributes: MutableList<Attribute> = mutableListOf()
-)
+    override var attributes: MutableList<Attribute> = mutableListOf()
+) : Attributed
 
 public val MediaDescription.lines: List<String>
     get() = buildList {

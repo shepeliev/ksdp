@@ -26,9 +26,9 @@ public data class SessionDescription(
     var bandwidth: MutableList<Bandwidth> = mutableListOf(),
     val zoneAdjustments: MutableList<ZoneAdjustment> = mutableListOf(),
     var key: Key? = null,
-    var attributes: MutableList<Attribute> = mutableListOf(),
+    override var attributes: MutableList<Attribute> = mutableListOf(),
     var mediaDescriptions: MutableList<MediaDescription> = mutableListOf(),
-)
+) : Attributed
 
 /**
  * Returns a list of encoded lines of the SDP.
@@ -92,4 +92,11 @@ public fun String.parseSdp(): SessionDescription {
         attributes = parseResults['a'] as MutableList<Attribute>? ?: mutableListOf(),
         mediaDescriptions = parseResults['m'] as MutableList<MediaDescription>? ?: mutableListOf(),
     )
+}
+
+/**
+ * Returns the first [MediaDescription] with the specified media type.
+ */
+public fun SessionDescription.mediaDescription(type: String): MediaDescription? {
+    return mediaDescriptions.firstOrNull { it.media.type == type }
 }
