@@ -29,4 +29,4 @@ package com.shepeliev.ksdp
  */
 public data class Bandwidth(var type: String, var bandwidth: Int)
 
-internal val Bandwidth.line: String get() = "b=$type:$bandwidth"
+public val Bandwidth.line: String get() = "b=$type:$bandwidth"

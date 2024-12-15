@@ -26,9 +26,9 @@ public data class MediaDescription(
     var attributes: MutableList<Attribute> = mutableListOf()
 )
 
-internal val MediaDescription.lines: List<String>
+public val MediaDescription.lines: List<String>
     get() = buildList {
-        add("m=${media}")
+        add(media.line)
         info?.let { add("i=$it") }
         connection?.let { add(it.line) }
         bandwidth.forEach { add(it.line) }

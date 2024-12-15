@@ -30,4 +30,4 @@ public data class Time(val start: Instant, val end: Instant)
 public fun Time(startMs: Long = 0, endMs: Long = 0): Time =
     Time(Instant.fromEpochMilliseconds(startMs), Instant.fromEpochMilliseconds(endMs))
 
-internal val Time.line: String get() = "t=${start.toNtp()} ${end.toNtp()}"
+public val Time.line: String get() = "t=${start.toNtp()} ${end.toNtp()}"

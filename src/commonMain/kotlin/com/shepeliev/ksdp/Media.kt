@@ -34,10 +34,10 @@ public data class Media @Throws(SdpException::class) constructor(
         checkIt(port >= 0) { "Port must be non-negative" }
         checkIt(portCount >= 1) { "Port count must be positive" }
     }
+}
 
-    override fun toString(): String {
-        val portCountText = if (portCount > 1) "/$portCount" else ""
-        val formatsText = formats.joinToString(" ")
-        return "$type $port$portCountText $protocol $formatsText"
-    }
+public val Media.line: String get() {
+    val portCountText = if (portCount > 1) "/$portCount" else ""
+    val formatsText = formats.joinToString(" ")
+    return "m=$type $port$portCountText $protocol $formatsText"
 }

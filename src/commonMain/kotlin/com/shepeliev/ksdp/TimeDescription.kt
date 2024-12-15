@@ -20,7 +20,7 @@ public data class TimeDescription @Throws(SdpException::class) constructor(
     var repeats: MutableList<Repeat> = mutableListOf()
 )
 
-internal val TimeDescription.lines: List<String>
+public val TimeDescription.lines: List<String>
     get() = buildList {
         add(time.line)
         repeats.forEach { add(it.line) }

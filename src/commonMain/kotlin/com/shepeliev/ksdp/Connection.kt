@@ -25,4 +25,4 @@ public data class Connection(
     var networkType: String = "IN",
 )
 
-internal val Connection.line: String get() = "c=$networkType $addressType $address"
+public val Connection.line: String get() = "c=$networkType $addressType $address"

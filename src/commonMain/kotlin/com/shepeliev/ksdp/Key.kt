@@ -26,7 +26,7 @@ public sealed class Key(internal val method: String) {
     }
 }
 
-internal val Key.line: String
+public val Key.line: String
     get() = when(this) {
         is Key.Clear -> "k=$method:$key"
         is Key.Base64 -> "k=$method:$key"

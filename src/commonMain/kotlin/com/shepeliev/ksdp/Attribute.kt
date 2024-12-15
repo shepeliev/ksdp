@@ -23,7 +23,7 @@ public sealed interface Attribute {
     public data class Invalid(override val name: String, val line: String) : Attribute
 }
 
-internal val Attribute.line: String get() = when (this) {
+public val Attribute.line: String get() = when (this) {
     is Attribute.Identity -> "a=$name"
     is Attribute.NameValue -> "a=$name:$value"
     is Attribute.Invalid -> line

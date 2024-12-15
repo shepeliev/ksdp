@@ -35,5 +35,5 @@ public data class Origin(
     var addressType: String = "IP4",
 )
 
-internal val Origin.line: String
+public val Origin.line: String
     get() = "o=$username $sessionId $sessionVersion $networkType $addressType $address"

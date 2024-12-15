@@ -13,7 +13,7 @@ public data class Repeat @Throws(SdpException::class) constructor(
     }
 }
 
-internal val Repeat.line: String get() = buildString {
+public val Repeat.line: String get() = buildString {
     append("r=")
     append(interval.inWholeSeconds)
     append(' ')
