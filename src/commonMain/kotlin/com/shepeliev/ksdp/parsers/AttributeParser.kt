@@ -7,7 +7,14 @@ public object AttributeParser : Parser<Attribute> {
         val (fieldType, fieldValue) = text.split("=", limit = 2)
 
         return when {
-            fieldType != "a" -> Attribute.Invalid(text)
+            fieldType != "a" && fieldValue.contains(":") -> {
+                val name = fieldValue.substringBefore(":")
+                Attribute.Invalid(name, text)
+            }
+
+            fieldType != "a" -> {
+                Attribute.Invalid(fieldValue, text)
+            }
 
             fieldValue.contains(":") -> {
                 val (name, value) = fieldValue.split(":", limit = 2)

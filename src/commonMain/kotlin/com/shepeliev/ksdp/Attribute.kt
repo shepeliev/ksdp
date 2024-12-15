@@ -16,9 +16,11 @@ package com.shepeliev.ksdp
  * If a value is present, it must be preceeded by the : character.
  */
 public sealed interface Attribute {
-    public data class Identity(val name: String) : Attribute
-    public data class NameValue(val name: String, val value: String) : Attribute
-    public data class Invalid(val line: String) : Attribute
+    public val name: String
+
+    public data class Identity(override val name: String) : Attribute
+    public data class NameValue(override val name: String, val value: String) : Attribute
+    public data class Invalid(override val name: String, val line: String) : Attribute
 }
 
 internal val Attribute.line: String get() = when (this) {
